@@ -42,9 +42,8 @@ export default function CreatePage() {
 
       if (response.ok) {
         // Generate a proper collection username
-        const deptCode = formData.department.split(" ")[0].replace(/[^A-Z]/g, "")
-        const username = `${formData.section}-${formData.courseCode}-2025-${deptCode}`
-
+        const deptCode = formData.department.split(" ")[0]; // Use the full first word
+        const username = `${formData.section}-${formData.courseCode}-2025-${deptCode}`;
         // Create the collection object
         const mockCollection = {
           username: username,
@@ -66,9 +65,8 @@ export default function CreatePage() {
   const showNotification = (message, type = "success") => {
     // Simple notification system - you can replace with a proper toast library
     const notification = document.createElement("div")
-    notification.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-xl text-white font-medium transition-all duration-300 ${
-      type === "success" ? "bg-green-600" : "bg-red-600"
-    }`
+    notification.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-xl text-white font-medium transition-all duration-300 ${type === "success" ? "bg-green-600" : "bg-red-600"
+      }`
     notification.textContent = message
     document.body.appendChild(notification)
 

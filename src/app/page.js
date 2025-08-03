@@ -1,9 +1,10 @@
 import Contact from "@/components/HomePage/Contact";
+import Dashboard from "@/components/HomePage/dashboard";
 import Features from "@/components/HomePage/Feature";
 import Footer from "@/components/HomePage/Footer";
 import Hero from "@/components/HomePage/Hero";
 import Navbar from "@/components/HomePage/Navbar";
-import RecentCollections from "@/components/HomePage/Recent-Collection";
+import RecentCollections from "@/components/HomePage/recent-collection";
 
 
 export default function HomePage() {
@@ -11,6 +12,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-white">
       <Navbar />
       <Hero />
+      <Dashboard />
       <Features />
       <RecentCollections />
       <Contact />

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { ArrowRight, ExternalLink, Trash2, Calendar, Users, BookOpen } from "lucide-react"
+import { ArrowRight, ExternalLink, Trash2, Calendar, Users, BookOpen } from 'lucide-react'
 
 export default function RecentCollections() {
   const [collections, setCollections] = useState([])
@@ -19,10 +19,14 @@ export default function RecentCollections() {
       )
       if (response.ok) {
         const data = await response.json()
-        setCollections(data.collections || [])
+        setCollections(data.collections || []) // Expects { collections: [...] }
+      } else {
+        console.error("Failed to fetch recent collections:", response.status, response.statusText)
+        // Optionally set an error state to display to the user
       }
     } catch (error) {
-      console.error("Failed to fetch recent collections:", error)
+      console.error("Error fetching recent collections:", error)
+      // Optionally set an error state to display to the user
     } finally {
       setIsLoading(false)
     }
@@ -40,6 +44,8 @@ export default function RecentCollections() {
       )
       if (response.ok) {
         setCollections(collections.filter((c) => c.username !== username))
+      } else {
+        console.error("Failed to delete collection:", response.status, response.statusText)
       }
     } catch (error) {
       console.error("Failed to delete collection:", error)

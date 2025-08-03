@@ -49,7 +49,7 @@ export default function SubmitForm({ username, onSubmissionSuccess }) {
             <Upload className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold">Submit Your Team's Slides</h2>
+            <h2 className="text-2xl font-bold">Submit Your Teams Slides</h2>
             <p className="text-green-100">Upload your presentation slides and share the link here</p>
           </div>
         </div>

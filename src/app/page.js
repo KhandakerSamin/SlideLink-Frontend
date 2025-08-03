@@ -14,7 +14,7 @@ export default function HomePage() {
       <Hero />
       <Dashboard />
       <Features />
-      <RecentCollections />
+      {/* <RecentCollections /> */}
       <Contact />
       <Footer />
     </div>

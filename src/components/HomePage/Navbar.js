@@ -21,12 +21,7 @@ export default function Navbar() {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-12">
-              <Link
-                href="/collections"
-                className="text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200"
-              >
-                Collections
-              </Link>
+
               <Link
                 href="#features"
                 className="text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200"
@@ -43,7 +38,7 @@ export default function Navbar() {
                 href="/create"
                 className="bg-blue-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors duration-200"
               >
-                Get Started
+                Create Now
               </Link>
             </div>
 
@@ -99,7 +94,7 @@ export default function Navbar() {
                 className="block bg-blue-600 text-white px-6 py-4 rounded-xl font-medium hover:bg-blue-700 transition-colors duration-200 text-center"
                 onClick={() => setIsOpen(false)}
               >
-                Get Started
+                Create Now
               </Link>
             </div>
           </div>

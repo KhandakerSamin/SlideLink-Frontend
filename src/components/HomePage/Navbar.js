@@ -2,21 +2,30 @@
 import Link from "next/link"
 import { useState } from "react"
 import { Menu, X } from "lucide-react"
+import Image from "next/image"
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
     <>
-      <nav className="bg-white border-b border-gray-100 sticky top-0 z-50 backdrop-blur-sm bg-white/95">
+      <nav className=" border-b border-gray-100 sticky top-0 z-50 backdrop-blur-sm bg-white/95">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
+              {/* <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
                 <span className="text-white font-bold text-lg">SL</span>
               </div>
-              <span className="text-2xl font-bold text-gray-900">SlideLink</span>
+              <span className="text-2xl font-bold text-gray-900">SlideLink</span> */}
+              <Image
+                src="/logo.png"
+                alt="SlideLink Logo"
+                width={80}
+                height={40}
+                className="w-35 h-10 rounded-xl"
+              />
+
             </Link>
 
             {/* Desktop Navigation */}

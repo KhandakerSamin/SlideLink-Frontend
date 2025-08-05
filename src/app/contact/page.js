@@ -78,9 +78,9 @@ export default function ContactPage() {
           </Link>
         </div>
 
-        <div className="flex items-center justify-between gap-8">
+        <div className="flex flex-col items-center justify-between gap-8">
           {/* Contact Form Section */}
-          <div className="bg-white w-full rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-12">
+          <div className="bg-white w-full rounded-2xl max-w-3xl shadow-sm border border-gray-100 overflow-hidden mb-12">
             <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-8 text-center">
               <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <MessageSquare className="w-8 h-8" />
@@ -189,7 +189,7 @@ export default function ContactPage() {
           </div>
 
           {/* Portfolio Section Below Form */}
-          <div className="bg-gradient-to-b from-gray-900 to-blue-900 text-white p-8 rounded-2xl shadow-lg mt-12">
+          <div className="bg-gradient-to-b from-gray-900 to-blue-900  text-white p-8 rounded-2xl shadow-lg mt-12">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
               <div className="flex flex-col gap-4 items-start text-left animate-fade-in-up">
                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-gray-800/80 border border-gray-700 rounded-full text-sm text-gray-200 backdrop-blur-sm hover:bg-gray-700 transition-all duration-300">
@@ -284,15 +284,15 @@ const CoderProfileCard = () => {
           </div>
           <div className="pl-4">
             <span className="text-gray-200">name:</span>{" "}
-            <span className="text-green-400">"{coderData.name}",</span>
+            <span className="text-green-400">&quot;{coderData.name}&quot;,</span>
           </div>
           <div className="pl-4">
             <span className="text-gray-200">department:</span>{" "}
-            <span className="text-green-400">"{coderData.department}",</span>
+            <span className="text-green-400">&quot;{coderData.department}&quot;,</span>
           </div>
           <div className="pl-4">
             <span className="text-gray-200">batch:</span>{" "}
-            <span className="text-green-400">"{coderData.batch}",</span>
+            <span className="text-green-400">&quot;{coderData.batch}&quot;,</span>
           </div>
           <div className="pl-4">
             <span className="text-gray-200">role:</span>{" "}

@@ -13,18 +13,17 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
-            <Link href="/" className="flex items-center space-x-3">
-              {/* <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-lg">SL</span>
-              </div>
-              <span className="text-2xl font-bold text-gray-900">SlideLink</span> */}
+            <Link href="/" className="flex items-center space-x-1.5">
               <Image
-                src="/logo.png"
+                src="/favicon3.svg"
                 alt="SlideLink Logo"
-                width={80}
+                width={40}
                 height={40}
-                className="w-35 h-10 rounded-xl"
-              />
+                className="h-8 w-8"
+                ></Image>
+              
+              <span className="text-2xl font-bold text-gray-900">SlideLink</span>
+
 
             </Link>
 
@@ -113,4 +112,44 @@ export default function Navbar() {
       )}
     </>
   )
+}
+
+
+
+import React from 'react';
+ function ShimmerButton() {
+  const customCss = `
+    /* This is the key to the seamless animation.
+      The @property rule tells the browser that '--angle' is a custom property
+      of type <angle>. This allows the browser to smoothly interpolate it
+      during animations, preventing the "jump" at the end of the loop.
+    */
+    @property --angle {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
+    }
+
+    /* The keyframe animation simply transitions the --angle property
+      from its start (0deg) to its end (360deg).
+    */
+    @keyframes shimmer-spin {
+      to {
+        --angle: 360deg;
+      }
+    }
+  `;
+  return (<div className="flex items-center justify-center font-sans">
+      <style>{customCss}</style>
+      <button className="relative inline-flex items-center justify-center p-[1.5px] bg-gray-300 dark:bg-black rounded-full overflow-hidden group">
+        <div className="absolute inset-0" style={{
+          background: 'conic-gradient(from var(--angle), transparent 25%, #06b6d4, transparent 50%)',
+          animation: 'shimmer-spin 2.5s linear infinite'
+        }} />
+        <span className="relative z-10 inline-flex items-center justify-center w-full h-full px-8 py-3 text-gray-900 dark:text-white bg-white dark:bg-gray-900 rounded-full group-hover:bg-gray-100 dark:group-hover:bg-gray-800 transition-colors duration-300">
+          Shimmer Button
+        </span>
+      </button>
+    </div>
+  );
 }

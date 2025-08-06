@@ -296,22 +296,22 @@ const CoderProfileCard = () => {
           </div>
           <div className="pl-4">
             <span className="text-gray-200">role:</span>{" "}
-            <span className="text-green-400">"{coderData.role}",</span>
+            <span className="text-green-400">&quot;{coderData.role}&quot;,</span>
           </div>
           <div className="pl-4">
             <span className="text-gray-200">seniority:</span>{" "}
-            <span className="text-green-400">"{coderData.seniority}",</span>
+            <span className="text-green-400">&quot;{coderData.seniority}&quot;,</span>
           </div>
           <div className="pl-4">
             <span className="text-gray-200">location:</span>{" "}
-            <span className="text-green-400">"{coderData.location}",</span>
+            <span className="text-green-400">&quot;{coderData.location}&quot;,</span>
           </div>
           <div className="pl-4">
             <span className="text-gray-200">skills:</span>{" "}
             <span className="text-gray-400">[</span>
             {coderData.skills.map((skill, index) => (
               <span key={skill}>
-                <span className="text-cyan-400">"{skill}"</span>
+                <span className="text-cyan-400">&quot;{skill}&quot;</span>
                 {index < coderData.skills.length - 1 && <span className="text-gray-400">, </span>}
               </span>
             ))}

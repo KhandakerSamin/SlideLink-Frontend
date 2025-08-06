@@ -68,11 +68,11 @@ function GradientText({
 
 export default function Hero() {
   return (
-    <section className="bg-gradient-to-b from-gray-50 to-white py-24 lg:py-24">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+    <section className="bg-gradient-to-b min-h-screen flex items-center from-gray-50 to-white py-24 lg:py-24">
+      <div className="max-w-7xl pb-20  mx-auto px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
            <div>
-               <h1 className="text-5xl lg:text-7xl font-extrabold leading-tight text-black"> Share Your Presentation Slides </h1>
+               <h1 className="text-5xl lg:text-6xl font-extrabold leading-tight text-black"> Share Your Presentation Slides </h1>
           </div>
           <GradientText
             className="text-5xl lg:text-7xl font-extrabold leading-tight pb-5"
@@ -92,14 +92,14 @@ export default function Hero() {
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
             <Link
               href="/create"
-              className="group bg-blue-600 text-white px-8 py-4 rounded-xl font-extrabold hover:bg-blue-700 transition-all duration-200 flex items-center space-x-2 text-lg"
+              className="group bg-blue-600 text-white px-8 py-4 rounded-xl font-medium hover:bg-blue-700 transition-all duration-200 flex items-center space-x-2 text-lg"
             >
               <span>Create Collection</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
             </Link>
             <Link
               href="/join"
-              className="group border-2 border-gray-200 text-gray-700 px-8 py-4 rounded-xl font-extrabold hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 flex items-center space-x-2 text-lg"
+              className="group border-2 border-gray-200 text-gray-700 px-8 py-4 rounded-xl font-medium hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 flex items-center space-x-2 text-lg"
             >
               <Users className="w-5 h-5" />
               <span>Join Collection</span>

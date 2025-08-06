@@ -1,4 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
+import { Outfit } from "next/font/google";
+
+const outfit = Outfit({ subsets: ["latin"] });
+
 import "./globals.css"; // Ensure global styles are imported
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -11,15 +15,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "SlideLink",
+  title: "SlideLink - Samin.DEV",
   description: "SlideLink - Your Gateway to Seamless Presentations",
+  icons: {
+    icon: "/favicon3.svg",
+  },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      className={outfit.className}
       >
         {children}
       </body>

@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 
 export default function Footer() {
@@ -6,12 +7,19 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
           <div className="lg:col-span-2">
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-lg">SL</span>
-              </div>
-              <span className="text-2xl font-bold">SlideLink</span>
-            </div>
+            <Link href="/" className="flex items-center space-x-1.5">
+              <Image
+                src="/favicon3.svg"
+                alt="SlideLink Logo"
+                width={40}
+                height={40}
+                className="h-8 w-8"
+                ></Image>
+              
+              <span className="text-2xl font-bold text-white">SlideLink</span>
+
+
+            </Link>
             <p className="text-gray-400 mb-6 leading-relaxed max-w-md">
               Streamlining presentation sharing for academic institutions worldwide.
             </p>

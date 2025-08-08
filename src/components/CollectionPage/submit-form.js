@@ -24,17 +24,23 @@ export default function SubmitForm({ username, onSubmissionSuccess }) {
           body: JSON.stringify(submissionData),
         }
       )
+
       const data = await response.json()
+
       if (response.ok) {
-        showNotification("Success! Slide link submitted successfully", "success")
+        showNotification("✅ Success! Slide link submitted successfully", "success")
         setSubmissionData({ teamName: "", slideLink: "", leaderEmail: "" })
         await onSubmissionSuccess()
       } else {
-        showNotification(`Submission Failed: ${data.error || "Failed to submit"}`, "error")
+        if (response.status === 409 || data.error?.toLowerCase().includes("team name already exists")) {
+          showNotification("❌ A team with this name has already submitted. Please choose a different name.", "error")
+        } else {
+          showNotification(`❌ Submission Failed: ${data.error || "Failed to submit"}`, "error")
+        }
       }
     } catch (error) {
       console.error("Error submitting slide link:", error)
-      showNotification("Something went wrong. Please try again.", "error")
+      showNotification("⚠️ Something went wrong. Please try again.", "error")
     } finally {
       setIsSubmitting(false)
     }
@@ -75,6 +81,8 @@ export default function SubmitForm({ username, onSubmissionSuccess }) {
               className="w-full text-black placeholder-gray-600 px-4 py-3 border border-gray-200 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-200"
             />
           </div>
+
+          
 
           {/* Slide Link Field */}
           <div>

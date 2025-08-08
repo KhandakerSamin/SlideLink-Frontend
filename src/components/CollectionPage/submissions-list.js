@@ -5,11 +5,14 @@ import { Search, Users, ExternalLink, Clock, Mail } from "lucide-react"
 
 export default function SubmissionsList({ submissions }) {
   const [searchTerm, setSearchTerm] = useState("")
+
   const filteredSubmissions = submissions.filter((submission) =>
-    submission.teamName.toLowerCase().includes(searchTerm.toLowerCase()),
+    submission.teamName.toLowerCase().includes(searchTerm.toLowerCase())
   )
+
   return (
     <div className="bg-white rounded-b-2xl shadow-sm border border-gray-100 border-t-0">
+      {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white p-8">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
           <div className="mb-6 lg:mb-0">
@@ -27,6 +30,8 @@ export default function SubmissionsList({ submissions }) {
           </div>
         </div>
       </div>
+
+      {/* Content */}
       <div className="p-8">
         {filteredSubmissions.length === 0 ? (
           <div className="text-center py-16">
@@ -48,7 +53,9 @@ export default function SubmissionsList({ submissions }) {
                 className="flex flex-col lg:flex-row lg:items-center lg:justify-between p-6 border border-gray-100 rounded-2xl hover:shadow-md transition-all duration-200 bg-gradient-to-r from-gray-50 to-white"
               >
                 <div className="flex-1 mb-4 lg:mb-0">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{submission.teamName}</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    {submission.teamName}
+                  </h3>
                   {submission.leaderEmail && (
                     <div className="flex items-center text-sm text-blue-600 font-medium mb-2">
                       <Mail className="w-4 h-4 mr-2" />

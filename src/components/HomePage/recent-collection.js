@@ -53,22 +53,22 @@ export default function RecentCollections() {
   }
 
   return (
-    <section id="collections" className="py-24 lg:py-32 bg-gray-50">
+    <section id="collections" className="py-24 lg:py-32 bg-blue-50">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-16">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-center text-center mb-16">
           <div className="mb-8 lg:mb-0">
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">Recent Collections</h2>
             <p className="text-xl text-gray-600 leading-relaxed">
               See whats happening across different classes and departments
             </p>
           </div>
-          <Link
+          {/* <Link
             href="/collections"
             className="group inline-flex items-center space-x-2 bg-white border border-gray-200 text-gray-700 px-6 py-3 rounded-xl font-medium hover:border-gray-300 hover:bg-gray-50 transition-all duration-200"
           >
             <span>View All Collections</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
-          </Link>
+          </Link> */}
         </div>
 
         {isLoading ? (

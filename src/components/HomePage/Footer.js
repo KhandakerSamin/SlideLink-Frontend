@@ -20,7 +20,7 @@ export default function Footer() {
 
 
             </Link>
-            <p className="text-gray-400 mb-6 leading-relaxed max-w-md">
+            <p className="text-gray-400 mb-6 leading-relaxed max-w-md mt-2">
               Streamlining presentation sharing for academic institutions worldwide.
             </p>
             <p className="text-sm text-gray-500">© 2024 SlideLink. All rights reserved.</p>

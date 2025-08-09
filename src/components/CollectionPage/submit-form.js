@@ -7,6 +7,7 @@ import { showNotification } from "@/lib/notifications"
 export default function SubmitForm({ username, onSubmissionSuccess }) {
   const [submissionData, setSubmissionData] = useState({
     teamName: "",
+    teamSerial: "",
     slideLink: "",
     leaderEmail: "",
   })
@@ -29,7 +30,7 @@ export default function SubmitForm({ username, onSubmissionSuccess }) {
 
       if (response.ok) {
         showNotification("✅ Success! Slide link submitted successfully", "success")
-        setSubmissionData({ teamName: "", slideLink: "", leaderEmail: "" })
+        setSubmissionData({ teamName: "",teamSerial:"", slideLink: "", leaderEmail: "" })
         await onSubmissionSuccess()
       } else {
         if (response.status === 409 || data.error?.toLowerCase().includes("team name already exists")) {
@@ -81,6 +82,23 @@ export default function SubmitForm({ username, onSubmissionSuccess }) {
               className="w-full text-black placeholder-gray-600 px-4 py-3 border border-gray-200 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-200"
             />
           </div>
+          {/* Team Serial Field */}
+          <div>
+            <label htmlFor="teamName" className="block text-sm font-semibold text-gray-800 mb-2">
+              Team Serial *
+            </label>
+            <input
+              id="teamSerial"
+              placeholder="1, 2, 3, etc."
+              maxLength={50}
+              value={submissionData.teamSerial}
+              onChange={(e) =>
+                setSubmissionData({ ...submissionData, teamSerial: e.target.value })
+              }
+              required
+              className="w-full text-black placeholder-gray-600 px-4 py-3 border border-gray-200 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-200"
+            />
+          </div>
 
           
 
@@ -102,7 +120,7 @@ export default function SubmitForm({ username, onSubmissionSuccess }) {
             />
             <div className="flex items-start mt-2 text-sm text-gray-600">
               <AlertCircle className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0 text-red-500" />
-              <p className="text-red-500">
+              <p className="text-black">
                 Make sure your slide link is publicly accessible or shared with viewing permissions
               </p>
             </div>

@@ -5,8 +5,8 @@ import { ArrowLeft, Users, Lock, Mail, BookOpen } from "lucide-react"
 
 const faculties = {
   "Faculty of Science and Information Technology (FSIT)": [
-    "Computer Science & Engineering (CSE)",
     "Software Engineering (SWE)",
+    "Computer Science & Engineering (CSE)",
     "Computing & Information System (CIS)",
     "Environmental Science and Disaster Management (ESDM)",
     "Multimedia & Creative Technology (MCT)",

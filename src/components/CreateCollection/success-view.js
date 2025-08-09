@@ -69,7 +69,7 @@ export default function SuccessView({ collection, onNotification }) {
                   onClick={() => copyToClipboard(collection.username, "Collection ID")}
                   className="px-4 py-3 border border-gray-300 rounded-xl hover:bg-gray-100 transition-colors duration-200"
                 >
-                  <Copy className="w-4 h-4" />
+                  <Copy className="w-4 h-4 text-black" />
                 </button>
               </div>
             </div>
@@ -87,7 +87,7 @@ export default function SuccessView({ collection, onNotification }) {
                   onClick={() => copyToClipboard(collection.shareLink, "Share link")}
                   className="px-4 py-3 border border-gray-300 rounded-xl hover:bg-gray-100 transition-colors duration-200"
                 >
-                  <Copy className="w-4 h-4" />
+                  <Copy className="w-4 h-4 text-black" />
                 </button>
               </div>
               <p className="text-sm text-gray-700 mt-2">This link includes the password for easy access</p>
@@ -96,8 +96,8 @@ export default function SuccessView({ collection, onNotification }) {
             {/* QR Code */}
             <div className="text-center">
               <label className="block Ttext-base font-semibold text-gray-900 mb-4">QR Code for Easy Sharing</label>
-              <div className="bg-gray-50 p-8 rounded-2xl inline-block">
-                <div className="w-48 h-48 mx-auto bg-white rounded-lg p-4 shadow-sm">
+              <div className="  rounded-2xl inline-block">
+                <div className="w-56 h-56 mx-auto bg-white rounded-lg shadow-sm">
                   <img
                     src={collection.qrCode || "/placeholder.svg"}
                     alt="QR Code for collection access"

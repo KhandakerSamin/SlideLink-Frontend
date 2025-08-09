@@ -64,7 +64,7 @@ export default function Dashboard() {
   ]
 
   return (
-    <section className="py-24 lg:py-32 bg-gray-100">
+    <section className="py-24 lg:py-32 bg-blue-50">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">SlideLink at a Glance</h2>

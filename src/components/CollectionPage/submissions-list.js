@@ -6,7 +6,6 @@ import {
   Users,
   ExternalLink,
   Clock,
-  Mail,
   Edit,
   Trash2,
   Hash,
@@ -29,23 +28,27 @@ export default function SubmissionsList({ submissions: initialSubmissions }) {
   const [username, setUsername] = useState("")
 
   useEffect(() => {
-    setUsername(localStorage.getItem("username") || "")
+    const storedUser = localStorage.getItem("username") || ""
+    setUsername(storedUser)
   }, [])
 
   const refreshSubmissions = async () => {
+    if (!username) return
     try {
       const res = await fetch(`/api/collections/${username}/submissions`)
       if (res.ok) {
         const data = await res.json()
-        setSubmissions(data)
+        setSubmissions(data.submissions || [])
+      } else {
+        console.error("Failed to fetch submissions")
       }
     } catch (error) {
-      console.error("Failed to refresh submissions", error)
+      console.error("Error fetching submissions:", error)
     }
   }
 
   const filteredSubmissions = submissions.filter((submission) =>
-    submission.teamName.toLowerCase().includes(searchTerm.toLowerCase())
+    submission.teamName?.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   const handleDeleteClick = (submissionId) => {
@@ -54,14 +57,16 @@ export default function SubmissionsList({ submissions: initialSubmissions }) {
   }
 
   const confirmDelete = async () => {
-    if (!deleteId) return
+    if (!deleteId || !username) {
+      console.error("Delete ID or username missing!")
+      return
+    }
 
     try {
       const res = await fetch(
         `/api/collections/${username}/submissions/${deleteId}`,
         { method: "DELETE" }
       )
-
       if (res.ok) {
         setIsDeleteModalOpen(false)
         setDeleteId(null)
@@ -81,7 +86,10 @@ export default function SubmissionsList({ submissions: initialSubmissions }) {
 
   const handleUpdateSubmit = async (e) => {
     e.preventDefault()
-    if (!editData._id) return
+    if (!editData._id || !username) {
+      console.error("Edit ID or username missing!")
+      return
+    }
 
     try {
       const res = await fetch(
@@ -96,7 +104,6 @@ export default function SubmissionsList({ submissions: initialSubmissions }) {
           }),
         }
       )
-
       if (res.ok) {
         setIsEditModalOpen(false)
         await refreshSubmissions()
@@ -160,12 +167,6 @@ export default function SubmissionsList({ submissions: initialSubmissions }) {
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">
                     {submission.teamName}
                   </h3>
-                  {submission.leaderEmail && (
-                    <div className="flex items-center text-sm text-blue-600 font-medium mb-2">
-                      <Mail className="w-4 h-4 mr-2" />
-                      {submission.leaderEmail}
-                    </div>
-                  )}
                   <div className="flex items-center text-sm text-gray-500">
                     <Clock className="w-4 h-4 mr-2" />
                     Submitted {new Date(submission.submittedAt).toLocaleString()}
@@ -180,21 +181,37 @@ export default function SubmissionsList({ submissions: initialSubmissions }) {
                     rel="noopener noreferrer"
                     className="inline-flex items-center bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors duration-200"
                   >
-                    <ExternalLink className="w-4 h-4 mr-2" />
                     View Slides
+                    <ExternalLink className="w-4 h-4 ml-3" />
                   </a>
                   <button
                     onClick={() => openEditModal(submission)}
-                    className="inline-flex items-center bg-yellow-500 text-white px-4 py-3 rounded-xl font-semibold hover:bg-yellow-600 transition-colors duration-200"
+                    className=" items-center bg-yellow-500 hidden md:block text-white px-4 py-3 rounded-xl font-semibold hover:bg-yellow-600 transition-colors duration-200"
                   >
                     <Edit className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleDeleteClick(submission._id)}
-                    className="inline-flex items-center bg-red-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-red-700 transition-colors duration-200"
+                    className="hidden md:block items-center bg-red-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-red-700 transition-colors duration-200"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
+                  <div className="flex items-center md:hidden justify-between gap-2 text-sm text-gray-500">
+                    <button
+                      onClick={() => openEditModal(submission)}
+                      className="inline-flex items-center bg-yellow-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-yellow-600 transition-colors duration-200"
+                    >
+                      <Edit className="w-8 h-4 mr-1" />
+                      Update
+                    </button>
+                    <button
+                      onClick={() => handleDeleteClick(submission._id)}
+                      className="flex items-center justify-around bg-red-600 text-white px-6 py-3 rounded-xl mx-auto font-semibold hover:bg-red-700 transition-colors duration-200"
+                    >
+                      <Trash2 className="w-8 h-4 mr-1" />
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}

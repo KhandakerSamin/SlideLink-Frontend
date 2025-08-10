@@ -1,8 +1,8 @@
 "use client"
 import { useState, useEffect } from "react"
-import { Search, Users, ExternalLink, Clock, Edit, Trash2, Hash, X } from "lucide-react"
+import { Search, Users, ExternalLink, Clock, Edit, Trash2, Hash, X, CheckCircle, AlertCircle } from "lucide-react"
 
-export default function SubmissionsList({ submissions: initialSubmissions }) {
+export default function SubmissionsList({ submissions: initialSubmissions, collectionUsername }) {
   const [submissions, setSubmissions] = useState(initialSubmissions || [])
   const [searchTerm, setSearchTerm] = useState("")
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
@@ -17,42 +17,90 @@ export default function SubmissionsList({ submissions: initialSubmissions }) {
   const [username, setUsername] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
-  useEffect(() => {
-    // Get username from localStorage or URL params
-    const storedUser = localStorage.getItem("username") || ""
-    const urlParams = new URLSearchParams(window.location.search)
-    const urlUsername = urlParams.get("username") || ""
+  // Success/Error Modal States
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [showErrorModal, setShowErrorModal] = useState(false)
+  const [modalMessage, setModalMessage] = useState("")
+  const [modalTitle, setModalTitle] = useState("")
 
-    const finalUsername = storedUser || urlUsername
-    console.log("Username sources:", { storedUser, urlUsername, finalUsername })
-
-    if (finalUsername) {
-      setUsername(finalUsername)
+  // Function to get username from multiple sources
+  const getUsername = () => {
+    if (collectionUsername) {
+      return collectionUsername
     }
-  }, [])
+
+    const storedUser = localStorage.getItem("username")
+    if (storedUser) {
+      return storedUser
+    }
+
+    const sessionUser = sessionStorage.getItem("username")
+    if (sessionUser) {
+      return sessionUser
+    }
+
+    if (typeof window !== "undefined") {
+      const pathParts = window.location.pathname.split("/")
+      const urlUsername = pathParts[pathParts.length - 1]
+      if (urlUsername && urlUsername !== "collection" && urlUsername !== "" && urlUsername !== "submissions") {
+        return urlUsername
+      }
+
+      const urlParams = new URLSearchParams(window.location.search)
+      const paramUsername = urlParams.get("username") || urlParams.get("u")
+      if (paramUsername) {
+        return paramUsername
+      }
+    }
+
+    return ""
+  }
+
+  useEffect(() => {
+    const foundUsername = getUsername()
+    setUsername(foundUsername)
+
+    if (foundUsername) {
+      localStorage.setItem("username", foundUsername)
+    }
+  }, [collectionUsername])
+
+  // Success Modal
+  const showSuccess = (title, message) => {
+    setModalTitle(title)
+    setModalMessage(message)
+    setShowSuccessModal(true)
+  }
+
+  // Error Modal
+  const showError = (title, message) => {
+    setModalTitle(title)
+    setModalMessage(message)
+    setShowErrorModal(true)
+  }
 
   const refreshSubmissions = async () => {
-    if (!username) {
-      console.log("No username available for refresh")
+    const currentUsername = username || getUsername()
+
+    if (!currentUsername) {
+      showError("Error", "No username found. Please make sure you're accessing this page correctly.")
       return
     }
 
     try {
       const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"
-      const url = `${backendUrl}/api/collections/${username}/submissions`
-      console.log("Fetching submissions from:", url)
+      const url = `${backendUrl}/api/collections/${currentUsername}/submissions`
 
       const res = await fetch(url)
 
       if (res.ok) {
         const data = await res.json()
         setSubmissions(data.submissions || [])
-        console.log("Submissions refreshed:", data.submissions?.length || 0)
       } else {
-        console.error("Failed to fetch submissions:", res.status, res.statusText)
+        showError("Error", `Failed to fetch submissions: ${res.status}`)
       }
     } catch (error) {
-      console.error("Error fetching submissions:", error)
+      showError("Network Error", "Unable to fetch submissions. Please check your connection.")
     }
   }
 
@@ -61,25 +109,37 @@ export default function SubmissionsList({ submissions: initialSubmissions }) {
   )
 
   const handleDeleteClick = (submissionId) => {
-    console.log("Delete clicked for ID:", submissionId)
+    const currentUsername = username || getUsername()
+    if (!currentUsername) {
+      showError("Error", "Username not found. Please refresh the page.")
+      return
+    }
+
+    if (!username && currentUsername) {
+      setUsername(currentUsername)
+    }
+
     setDeleteId(submissionId)
     setIsDeleteModalOpen(true)
   }
 
   const confirmDelete = async () => {
-    console.log("Attempting delete with:", { deleteId, username })
+    const currentUsername = username || getUsername()
 
-    if (!deleteId || !username) {
-      console.error("Delete ID or username missing!", { deleteId, username })
-      alert("Error: Missing required information for deletion")
+    if (!deleteId) {
+      showError("Error", "Submission ID is missing")
+      return
+    }
+
+    if (!currentUsername) {
+      showError("Error", "Username is missing. Please refresh the page and try again.")
       return
     }
 
     setIsLoading(true)
     try {
       const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"
-      const url = `${backendUrl}/api/collections/${username}/submissions/${deleteId}`
-      console.log("Delete URL:", url)
+      const url = `${backendUrl}/api/collections/${currentUsername}/submissions/${deleteId}`
 
       const res = await fetch(url, {
         method: "DELETE",
@@ -89,41 +149,44 @@ export default function SubmissionsList({ submissions: initialSubmissions }) {
       })
 
       if (res.ok) {
-        console.log("Submission deleted successfully")
         setIsDeleteModalOpen(false)
         setDeleteId(null)
         await refreshSubmissions()
-        alert("Submission deleted successfully!")
+        showSuccess("Success!", "Submission has been deleted successfully.")
       } else {
         const errorData = await res.json()
-        console.error("Failed to delete submission:", errorData)
-        alert(`Failed to delete: ${errorData.error || "Unknown error"}`)
+        showError("Delete Failed", errorData.error || "Unable to delete submission. Please try again.")
       }
     } catch (err) {
-      console.error("Error deleting submission:", err)
-      alert("Network error occurred while deleting")
+      showError("Network Error", "Unable to delete submission. Please check your connection.")
     } finally {
       setIsLoading(false)
     }
   }
 
   const openEditModal = (submission) => {
-    console.log("Opening edit modal with submission:", submission)
+    const currentUsername = username || getUsername()
+    if (!currentUsername) {
+      showError("Error", "Username not found. Please refresh the page.")
+      return
+    }
+
+    if (!username && currentUsername) {
+      setUsername(currentUsername)
+    }
 
     if (!submission || !submission._id) {
-      console.error("Invalid submission data:", submission)
-      alert("Error: Invalid submission data")
+      showError("Error", "Invalid submission data")
       return
     }
 
     const editDataToSet = {
-      _id: submission._id.toString(), // Ensure it's a string
+      _id: submission._id.toString(),
       teamName: submission.teamName || "",
       teamSerial: submission.teamSerial || "",
       slideLink: submission.slideLink || "",
     }
 
-    console.log("Setting edit data:", editDataToSet)
     setEditData(editDataToSet)
     setIsEditModalOpen(true)
   }
@@ -131,44 +194,33 @@ export default function SubmissionsList({ submissions: initialSubmissions }) {
   const handleUpdateSubmit = async (e) => {
     e.preventDefault()
 
-    console.log("Update attempt with:", {
-      editData,
-      username,
-      editDataId: editData._id,
-      usernameExists: !!username,
-    })
+    const currentUsername = username || getUsername()
 
-    // Validation
     if (!editData._id) {
-      console.error("Edit ID missing!", editData)
-      alert("Error: Submission ID is missing")
+      showError("Error", "Submission ID is missing")
       return
     }
 
-    if (!username) {
-      console.error("Username missing!", username)
-      alert("Error: Username is missing")
+    if (!currentUsername) {
+      showError("Error", "Username is missing. Please refresh the page and try again.")
       return
     }
 
     if (!editData.teamName || !editData.teamSerial || !editData.slideLink) {
-      console.error("Required fields missing:", editData)
-      alert("Error: Please fill in all required fields")
+      showError("Validation Error", "Please fill in all required fields")
       return
     }
 
     setIsLoading(true)
     try {
       const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"
-      const updateUrl = `${backendUrl}/api/collections/${username}/submissions/${editData._id}`
-      console.log("Update URL:", updateUrl)
+      const updateUrl = `${backendUrl}/api/collections/${currentUsername}/submissions/${editData._id}`
 
       const requestBody = {
         teamName: editData.teamName.trim(),
         teamSerial: editData.teamSerial.trim(),
         slideLink: editData.slideLink.trim(),
       }
-      console.log("Request body:", requestBody)
 
       const res = await fetch(updateUrl, {
         method: "PUT",
@@ -179,7 +231,6 @@ export default function SubmissionsList({ submissions: initialSubmissions }) {
       })
 
       if (res.ok) {
-        console.log("Submission updated successfully")
         setIsEditModalOpen(false)
         setEditData({
           _id: "",
@@ -188,25 +239,15 @@ export default function SubmissionsList({ submissions: initialSubmissions }) {
           slideLink: "",
         })
         await refreshSubmissions()
-        alert("Submission updated successfully!")
+        showSuccess("Success!", "Submission has been updated successfully.")
       } else {
         const errorData = await res.json()
-        console.error("Failed to update submission:", errorData)
-        alert(`Failed to update: ${errorData.error || "Unknown error"}`)
+        showError("Update Failed", errorData.error || "Unable to update submission. Please try again.")
       }
     } catch (err) {
-      console.error("Error updating submission:", err)
-      alert("Network error occurred while updating")
+      showError("Network Error", "Unable to update submission. Please check your connection.")
     } finally {
       setIsLoading(false)
-    }
-  }
-
-  const handleUsernameCheck = () => {
-    const storedUser = localStorage.getItem("username")
-    console.log("Manual username check:", storedUser)
-    if (storedUser && storedUser !== username) {
-      setUsername(storedUser)
     }
   }
 
@@ -218,7 +259,6 @@ export default function SubmissionsList({ submissions: initialSubmissions }) {
           <div className="mb-6 lg:mb-0">
             <h2 className="text-2xl font-bold mb-2">All Submissions</h2>
             <p className="text-purple-100">View all submitted presentation slides</p>
-            <p className="text-xs text-purple-200 mt-1">Current username: {username || "Not set"}</p>
           </div>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-purple-300" />
@@ -230,16 +270,16 @@ export default function SubmissionsList({ submissions: initialSubmissions }) {
             />
           </div>
         </div>
-        <button onClick={handleUsernameCheck} className="mt-2 px-3 py-1 bg-white/20 text-xs rounded hover:bg-white/30">
-          Refresh Username
-        </button>
       </div>
 
       {/* Loading Overlay */}
       {isLoading && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white p-4 rounded-lg">
-            <p className="text-gray-900">Processing...</p>
+          <div className="bg-white p-6 rounded-xl shadow-lg">
+            <div className="flex items-center space-x-3">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600"></div>
+              <p className="text-gray-900 font-medium">Processing...</p>
+            </div>
           </div>
         </div>
       )}
@@ -275,7 +315,6 @@ export default function SubmissionsList({ submissions: initialSubmissions }) {
                     <Clock className="w-4 h-4 mr-2" />
                     Submitted {new Date(submission.submittedAt).toLocaleString()}
                   </div>
-                  <div className="text-xs text-gray-400 mt-1">ID: {submission._id}</div>
                 </div>
 
                 {/* Actions */}
@@ -336,9 +375,17 @@ export default function SubmissionsList({ submissions: initialSubmissions }) {
       {isDeleteModalOpen && (
         <div className="fixed inset-0 backdrop-blur-sm bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 w-11/12 max-w-md shadow-lg">
-            <h3 className="text-lg font-bold mb-4 text-gray-900">Confirm Deletion</h3>
+            <div className="flex items-center mb-4">
+              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
+                <Trash2 className="w-6 h-6 text-red-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">Delete Submission</h3>
+                <p className="text-sm text-gray-500">This action cannot be undone</p>
+              </div>
+            </div>
             <p className="mb-6 text-gray-700">
-              Are you sure you want to delete this submission? This action cannot be undone.
+              Are you sure you want to delete this submission? All data will be permanently removed.
             </p>
             <div className="flex justify-end gap-4">
               <button
@@ -364,17 +411,16 @@ export default function SubmissionsList({ submissions: initialSubmissions }) {
       {isEditModalOpen && (
         <div className="fixed inset-0 backdrop-blur-sm bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-xl w-full max-w-lg shadow-lg">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl text-gray-900 font-bold">Edit Submission</h3>
+            <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center mr-3">
+                  <Edit className="w-5 h-5 text-yellow-600" />
+                </div>
+                <h3 className="text-xl text-gray-900 font-bold">Edit Submission</h3>
+              </div>
               <button onClick={() => setIsEditModalOpen(false)} disabled={isLoading} className="disabled:opacity-50">
-                <X className="w-6 h-6 text-gray-500" />
+                <X className="w-6 h-6 text-gray-500 hover:text-gray-700" />
               </button>
-            </div>
-
-            {/* Debug info */}
-            <div className="mb-4 p-2 bg-gray-100 rounded text-xs">
-              <p>Edit Data ID: {editData._id}</p>
-              <p>Username: {username}</p>
             </div>
 
             <form onSubmit={handleUpdateSubmit} className="space-y-4">
@@ -384,7 +430,7 @@ export default function SubmissionsList({ submissions: initialSubmissions }) {
                   type="text"
                   value={editData.teamName}
                   onChange={(e) => setEditData({ ...editData, teamName: e.target.value })}
-                  className="w-full border text-gray-900 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full border text-gray-900 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                   required
                   disabled={isLoading}
                 />
@@ -395,7 +441,7 @@ export default function SubmissionsList({ submissions: initialSubmissions }) {
                   type="text"
                   value={editData.teamSerial}
                   onChange={(e) => setEditData({ ...editData, teamSerial: e.target.value })}
-                  className="w-full border rounded-lg text-gray-900 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full border rounded-lg text-gray-900 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                   required
                   disabled={isLoading}
                 />
@@ -406,17 +452,17 @@ export default function SubmissionsList({ submissions: initialSubmissions }) {
                   type="url"
                   value={editData.slideLink}
                   onChange={(e) => setEditData({ ...editData, slideLink: e.target.value })}
-                  className="w-full border rounded-lg text-gray-900 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full border rounded-lg text-gray-900 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                   required
                   disabled={isLoading}
                 />
               </div>
-              <div className="flex justify-end gap-3 mt-4">
+              <div className="flex justify-end gap-3 mt-6">
                 <button
                   type="button"
                   onClick={() => setIsEditModalOpen(false)}
                   disabled={isLoading}
-                  className="px-4 py-2 text-red-500 border border-red-300 rounded-lg hover:bg-red-50 disabled:opacity-50 transition"
+                  className="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition"
                 >
                   Cancel
                 </button>
@@ -429,6 +475,48 @@ export default function SubmissionsList({ submissions: initialSubmissions }) {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 backdrop-blur-sm bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 w-11/12 max-w-md shadow-lg">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-8 h-8 text-green-600" />
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">{modalTitle}</h3>
+              <p className="text-gray-600 mb-6">{modalMessage}</p>
+              <button
+                onClick={() => setShowSuccessModal(false)}
+                className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Error Modal */}
+      {showErrorModal && (
+        <div className="fixed inset-0 backdrop-blur-sm bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 w-11/12 max-w-md shadow-lg">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <AlertCircle className="w-8 h-8 text-red-600" />
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">{modalTitle}</h3>
+              <p className="text-gray-600 mb-6">{modalMessage}</p>
+              <button
+                onClick={() => setShowErrorModal(false)}
+                className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+              >
+                OK
+              </button>
+            </div>
           </div>
         </div>
       )}

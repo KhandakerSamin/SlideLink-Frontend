@@ -1,7 +1,7 @@
 "use client"
 import Link from "next/link"
 import { useState } from "react"
-import { Menu, X } from "lucide-react"
+import { Menu, X, ArrowRight } from "lucide-react"
 import Image from "next/image"
 
 export default function Navbar() {
@@ -9,27 +9,35 @@ export default function Navbar() {
 
   return (
     <>
+      <style jsx>{`
+        @keyframes arrow-slide {
+          0% {
+            transform: translateX(-8px);
+            opacity: 0;
+          }
+          100% {
+            transform: translateX(0px);
+            opacity: 1;
+          }
+        }
+
+        .arrow-animate {
+          animation: arrow-slide 0.3s ease-out;
+        }
+      `}</style>
+
       <nav className=" border-b border-gray-100 sticky top-0 z-50 backdrop-blur-sm bg-white/95">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-1.5">
-              <Image
-                src="/favicon3.svg"
-                alt="SlideLink Logo"
-                width={40}
-                height={40}
-                className="h-8 w-8"
-                ></Image>
-              
+              <Image src="/favicon3.svg" alt="SlideLink Logo" width={40} height={40} className="h-8 w-8" />
+
               <span className="text-2xl font-bold text-gray-900">SlideLink</span>
-
-
             </Link>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-12">
-
               <Link
                 href="#features"
                 className="text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200"
@@ -44,9 +52,12 @@ export default function Navbar() {
               </Link>
               <Link
                 href="/create"
-                className="bg-blue-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors duration-200"
+                className="relative inline-flex items-center justify-center px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 text-white font-medium transition-all duration-300 hover:from-blue-500 hover:to-violet-500 hover:shadow-lg group overflow-hidden"
               >
-                Create Now
+                <span className="relative z-10 flex items-center gap-2">
+                  Create Now
+                  <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:arrow-animate" />
+                </span>
               </Link>
             </div>
 
@@ -99,57 +110,18 @@ export default function Navbar() {
               </Link>
               <Link
                 href="/create"
-                className="block bg-blue-600 text-white px-6 py-4 rounded-xl font-medium hover:bg-blue-700 transition-colors duration-200 text-center"
+                className="relative inline-flex items-center justify-center w-full px-6 py-4 rounded-md bg-gradient-to-r from-blue-600 to-violet-600 text-white font-medium transition-all duration-300 hover:from-blue-500 hover:to-violet-500 hover:shadow-lg group overflow-hidden"
                 onClick={() => setIsOpen(false)}
               >
-                Create Now
+                <span className="relative z-10 flex items-center gap-2">
+                  Create Now
+                  <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:arrow-animate" />
+                </span>
               </Link>
-
-
             </div>
           </div>
         </div>
       )}
     </>
   )
-}
-
-
-
-import React from 'react';
- function ShimmerButton() {
-  const customCss = `
-    /* This is the key to the seamless animation.
-      The @property rule tells the browser that '--angle' is a custom property
-      of type <angle>. This allows the browser to smoothly interpolate it
-      during animations, preventing the "jump" at the end of the loop.
-    */
-    @property --angle {
-      syntax: '<angle>';
-      initial-value: 0deg;
-      inherits: false;
-    }
-
-    /* The keyframe animation simply transitions the --angle property
-      from its start (0deg) to its end (360deg).
-    */
-    @keyframes shimmer-spin {
-      to {
-        --angle: 360deg;
-      }
-    }
-  `;
-  return (<div className="flex items-center justify-center font-sans">
-      <style>{customCss}</style>
-      <button className="relative inline-flex items-center justify-center p-[1.5px] bg-gray-300 dark:bg-black rounded-full overflow-hidden group">
-        <div className="absolute inset-0" style={{
-          background: 'conic-gradient(from var(--angle), transparent 25%, #06b6d4, transparent 50%)',
-          animation: 'shimmer-spin 2.5s linear infinite'
-        }} />
-        <span className="relative z-10 inline-flex items-center justify-center w-full h-full px-8 py-3 text-gray-900 dark:text-white bg-white dark:bg-gray-900 rounded-full group-hover:bg-gray-100 dark:group-hover:bg-gray-800 transition-colors duration-300">
-          Shimmer Button
-        </span>
-      </button>
-    </div>
-  );
 }

@@ -75,7 +75,7 @@ export default function Navbar() {
       {/* Mobile Slider Menu */}
       {isOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
-          <div className="fixed inset-0 bg-black bg-opacity-50" onClick={() => setIsOpen(false)} />
+          <div className="fixed inset-0 bg-white/20 backdrop-blur-md" onClick={() => setIsOpen(false)} />
           <div className="fixed right-0 top-0 h-full w-80 bg-white shadow-xl transform transition-transform duration-300">
             <div className="flex items-center justify-between p-6 border-b border-gray-100">
               <span className="text-xl font-bold text-gray-900">Menu</span>
@@ -87,13 +87,7 @@ export default function Navbar() {
               </button>
             </div>
             <div className="p-6 space-y-6">
-              <Link
-                href="/collections"
-                className="block text-lg text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200"
-                onClick={() => setIsOpen(false)}
-              >
-                Collections
-              </Link>
+
               <Link
                 href="#features"
                 className="block text-lg text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200"
@@ -110,7 +104,7 @@ export default function Navbar() {
               </Link>
               <Link
                 href="/create"
-                className="relative inline-flex items-center justify-center w-full px-6 py-4 rounded-md bg-gradient-to-r from-blue-600 to-violet-600 text-white font-medium transition-all duration-300 hover:from-blue-500 hover:to-violet-500 hover:shadow-lg group overflow-hidden"
+                className="relative inline-flex items-center justify-center w-full px-6 py-4 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 text-white font-medium transition-all duration-300 hover:from-blue-500 hover:to-violet-500 hover:shadow-lg group overflow-hidden"
                 onClick={() => setIsOpen(false)}
               >
                 <span className="relative z-10 flex items-center gap-2">

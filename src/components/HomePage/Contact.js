@@ -13,10 +13,10 @@ export default function Contact() {
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
             <Link
               href="/create"
-              className="group bg-blue-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-blue-700 transition-all duration-200 flex items-center space-x-2 text-lg"
+              className="group relative overflow-hidden bg-gradient-to-r from-blue-600 via-purple-600 to-violet-600 text-white px-8 py-4 rounded-xl font-semibold hover:from-blue-700 hover:via-purple-700 hover:to-violet-700 transition-all duration-300 flex items-center space-x-2 text-lg shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               <span>Create Your First Collection</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
+              <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-2" />
             </Link>
             <Link
               href="/contact"

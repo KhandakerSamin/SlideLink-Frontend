@@ -22,35 +22,23 @@ export default function CollectionPage() {
   const [activeTab, setActiveTab] = useState("submit")
 
   useEffect(() => {
-    const savedAuth = localStorage.getItem(`auth_${username}`)
-    if (savedAuth) {
-      setIsAuthenticated(true)
-      loadCollectionData()
-      loadSubmissions()
-      setIsLoading(false)
-    } else if (password) {
+    if (password) {
       authenticateAndLoadData()
-    } else {
-      setIsLoading(false)
     }
   }, [username, password])
 
   const authenticateAndLoadData = async () => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"}/api/collections/join`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            username: username,
-            password: password || passwordInput,
-          }),
-        },
-      )
+      const response = await fetch(`${process.env.BACKEND_URL || "http://localhost:5000"}/api/collections/join`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: username,
+          password: password || passwordInput,
+        }),
+      })
       if (response.ok) {
         setIsAuthenticated(true)
-        localStorage.setItem(`auth_${username}`, "true")
         await loadCollectionData()
         await loadSubmissions()
       } else {
@@ -66,9 +54,7 @@ export default function CollectionPage() {
 
   const loadCollectionData = async () => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"}/api/collections/${username}`,
-      )
+      const response = await fetch(`${process.env.BACKEND_URL || "http://localhost:5000"}/api/collections/${username}`)
       if (response.ok) {
         const data = await response.json()
         setCollectionData(data)
@@ -81,7 +67,7 @@ export default function CollectionPage() {
   const loadSubmissions = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"}/api/collections/${username}/submissions`,
+        `${process.env.BACKEND_URL || "http://localhost:5000"}/api/collections/${username}/submissions`,
       )
       if (response.ok) {
         const data = await response.json()
@@ -108,7 +94,7 @@ export default function CollectionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-violet-50">
+    <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
         <CollectionHeader collectionData={collectionData} submissions={submissions} />
 
@@ -125,4 +111,3 @@ export default function CollectionPage() {
     </div>
   )
 }
-

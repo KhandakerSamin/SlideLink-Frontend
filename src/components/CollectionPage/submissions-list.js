@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react"
 import { Search, Users, ExternalLink, Clock, Edit, Trash2, Hash, X, CheckCircle, AlertCircle } from "lucide-react"
 
-export default function SubmissionsList({ submissions: initialSubmissions, collectionUsername }) {
+function SubmissionsList({ submissions: initialSubmissions, collectionUsername }) {
   const [submissions, setSubmissions] = useState(initialSubmissions || [])
   const [searchTerm, setSearchTerm] = useState("")
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
@@ -88,8 +88,24 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
     }
 
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
+
+      if (!backendUrl) {
+        showError("Configuration Error", "Backend URL is not configured. Please contact the administrator.")
+        return
+      }
+
+      if (
+        typeof window !== "undefined" &&
+        window.location.hostname !== "localhost" &&
+        backendUrl.includes("localhost")
+      ) {
+        showError("Configuration Error", "Backend is not properly configured for production deployment.")
+        return
+      }
+
       const url = `${backendUrl}/api/collections/${currentUsername}/submissions`
+      console.log("[v0] Fetching submissions from:", url)
 
       const res = await fetch(url)
 
@@ -97,10 +113,15 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
         const data = await res.json()
         setSubmissions(data.submissions || [])
       } else {
-        showError("Error", `Failed to fetch submissions: ${res.status}`)
+        console.log("[v0] API response error:", res.status, res.statusText)
+        showError("Error", `Failed to fetch submissions: ${res.status} ${res.statusText}`)
       }
     } catch (error) {
-      showError("Network Error", "Unable to fetch submissions. Please check your connection.")
+      console.error("[v0] Network error:", error)
+      showError(
+        "Network Error",
+        "Unable to fetch submissions. Please check if the backend server is running and accessible.",
+      )
     }
   }
 
@@ -136,10 +157,21 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
       return
     }
 
+    const cleanId = deleteId.toString().match(/[a-f\d]{24}/i)?.[0] || deleteId
+    console.log("[v0] Original ID:", deleteId, "Clean ID:", cleanId)
+
     setIsLoading(true)
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"
-      const url = `${backendUrl}/api/collections/${currentUsername}/submissions/${deleteId}`
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
+
+      if (!backendUrl) {
+        showError("Configuration Error", "Backend URL is not configured. Please contact the administrator.")
+        setIsLoading(false)
+        return
+      }
+
+      const url = `${backendUrl}/api/collections/${currentUsername}/submissions/${cleanId}`
+      console.log("[v0] Deleting submission at:", url)
 
       const res = await fetch(url, {
         method: "DELETE",
@@ -155,10 +187,15 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
         showSuccess("Success!", "Submission has been deleted successfully.")
       } else {
         const errorData = await res.json()
+        console.log("[v0] Delete API error:", errorData)
         showError("Delete Failed", errorData.error || "Unable to delete submission. Please try again.")
       }
     } catch (err) {
-      showError("Network Error", "Unable to delete submission. Please check your connection.")
+      console.error("[v0] Delete network error:", err)
+      showError(
+        "Network Error",
+        "Unable to delete submission. Please check if the backend server is running and accessible.",
+      )
     } finally {
       setIsLoading(false)
     }
@@ -211,10 +248,21 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
       return
     }
 
+    const cleanId = editData._id.toString().match(/[a-f\d]{24}/i)?.[0] || editData._id
+    console.log("[v0] Original ID:", editData._id, "Clean ID:", cleanId)
+
     setIsLoading(true)
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"
-      const updateUrl = `${backendUrl}/api/collections/${currentUsername}/submissions/${editData._id}`
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
+
+      if (!backendUrl) {
+        showError("Configuration Error", "Backend URL is not configured. Please contact the administrator.")
+        setIsLoading(false)
+        return
+      }
+
+      const updateUrl = `${backendUrl}/api/collections/${currentUsername}/submissions/${cleanId}`
+      console.log("[v0] Updating submission at:", updateUrl)
 
       const requestBody = {
         teamName: editData.teamName.trim(),
@@ -242,10 +290,15 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
         showSuccess("Success!", "Submission has been updated successfully.")
       } else {
         const errorData = await res.json()
+        console.log("[v0] Update API error:", errorData)
         showError("Update Failed", errorData.error || "Unable to update submission. Please try again.")
       }
     } catch (err) {
-      showError("Network Error", "Unable to update submission. Please check your connection.")
+      console.error("[v0] Update network error:", err)
+      showError(
+        "Network Error",
+        "Unable to update submission. Please check if the backend server is running and accessible.",
+      )
     } finally {
       setIsLoading(false)
     }
@@ -523,3 +576,5 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
     </div>
   )
 }
+
+export default SubmissionsList

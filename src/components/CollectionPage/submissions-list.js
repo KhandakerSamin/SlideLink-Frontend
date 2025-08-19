@@ -1,8 +1,19 @@
 "use client"
 import { useState, useEffect } from "react"
-import { Search, Users, ExternalLink, Clock, Edit, Trash2, Hash, X, CheckCircle, AlertCircle } from "lucide-react"
+import {
+  Search,
+  Users,
+  ExternalLink,
+  Clock,
+  Edit,
+  Trash2,
+  Hash,
+  X,
+  CheckCircle,
+  AlertCircle,
+} from "lucide-react"
 
-function SubmissionsList({ submissions: initialSubmissions, collectionUsername }) {
+export default function SubmissionsList({ submissions: initialSubmissions, collectionUsername }) {
   const [submissions, setSubmissions] = useState(initialSubmissions || [])
   const [searchTerm, setSearchTerm] = useState("")
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
@@ -23,34 +34,32 @@ function SubmissionsList({ submissions: initialSubmissions, collectionUsername }
   const [modalMessage, setModalMessage] = useState("")
   const [modalTitle, setModalTitle] = useState("")
 
-  // Function to get username from multiple sources
+  // ✅ Improved getUsername function
   const getUsername = () => {
     if (collectionUsername) {
       return collectionUsername
     }
 
+    // Local/session storage
     const storedUser = localStorage.getItem("username")
-    if (storedUser) {
-      return storedUser
-    }
+    if (storedUser) return storedUser
 
     const sessionUser = sessionStorage.getItem("username")
-    if (sessionUser) {
-      return sessionUser
-    }
+    if (sessionUser) return sessionUser
 
     if (typeof window !== "undefined") {
-      const pathParts = window.location.pathname.split("/")
-      const urlUsername = pathParts[pathParts.length - 1]
-      if (urlUsername && urlUsername !== "collection" && urlUsername !== "" && urlUsername !== "submissions") {
-        return urlUsername
+      const pathParts = window.location.pathname.split("/").filter(Boolean)
+
+      // Expecting routes like: /collection/<username>/submissions
+      const collectionIndex = pathParts.indexOf("collection")
+      if (collectionIndex !== -1 && pathParts[collectionIndex + 1]) {
+        return pathParts[collectionIndex + 1]
       }
 
+      // Query params fallback
       const urlParams = new URLSearchParams(window.location.search)
       const paramUsername = urlParams.get("username") || urlParams.get("u")
-      if (paramUsername) {
-        return paramUsername
-      }
+      if (paramUsername) return paramUsername
     }
 
     return ""
@@ -58,6 +67,7 @@ function SubmissionsList({ submissions: initialSubmissions, collectionUsername }
 
   useEffect(() => {
     const foundUsername = getUsername()
+    console.log("🔎 Found username:", foundUsername) // Debug log
     setUsername(foundUsername)
 
     if (foundUsername) {
@@ -81,6 +91,7 @@ function SubmissionsList({ submissions: initialSubmissions, collectionUsername }
 
   const refreshSubmissions = async () => {
     const currentUsername = username || getUsername()
+    console.log("📡 Refreshing submissions for:", currentUsername)
 
     if (!currentUsername) {
       showError("Error", "No username found. Please make sure you're accessing this page correctly.")
@@ -88,24 +99,9 @@ function SubmissionsList({ submissions: initialSubmissions, collectionUsername }
     }
 
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
-
-      if (!backendUrl) {
-        showError("Configuration Error", "Backend URL is not configured. Please contact the administrator.")
-        return
-      }
-
-      if (
-        typeof window !== "undefined" &&
-        window.location.hostname !== "localhost" &&
-        backendUrl.includes("localhost")
-      ) {
-        showError("Configuration Error", "Backend is not properly configured for production deployment.")
-        return
-      }
-
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"
       const url = `${backendUrl}/api/collections/${currentUsername}/submissions`
-      console.log("[v0] Fetching submissions from:", url)
+      console.log("🌍 Fetching:", url)
 
       const res = await fetch(url)
 
@@ -113,15 +109,10 @@ function SubmissionsList({ submissions: initialSubmissions, collectionUsername }
         const data = await res.json()
         setSubmissions(data.submissions || [])
       } else {
-        console.log("[v0] API response error:", res.status, res.statusText)
-        showError("Error", `Failed to fetch submissions: ${res.status} ${res.statusText}`)
+        showError("Error", `Failed to fetch submissions: ${res.status}`)
       }
     } catch (error) {
-      console.error("[v0] Network error:", error)
-      showError(
-        "Network Error",
-        "Unable to fetch submissions. Please check if the backend server is running and accessible.",
-      )
+      showError("Network Error", "Unable to fetch submissions. Please check your connection.")
     }
   }
 
@@ -136,17 +127,12 @@ function SubmissionsList({ submissions: initialSubmissions, collectionUsername }
       return
     }
 
-    if (!username && currentUsername) {
-      setUsername(currentUsername)
-    }
-
     setDeleteId(submissionId)
     setIsDeleteModalOpen(true)
   }
 
   const confirmDelete = async () => {
     const currentUsername = username || getUsername()
-
     if (!deleteId) {
       showError("Error", "Submission ID is missing")
       return
@@ -157,28 +143,13 @@ function SubmissionsList({ submissions: initialSubmissions, collectionUsername }
       return
     }
 
-    const cleanId = deleteId.toString().match(/[a-f\d]{24}/i)?.[0] || deleteId
-    console.log("[v0] Original ID:", deleteId, "Clean ID:", cleanId)
-
     setIsLoading(true)
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"
+      const url = `${backendUrl}/api/collections/${currentUsername}/submissions/${deleteId}`
+      console.log("🗑️ Deleting:", url)
 
-      if (!backendUrl) {
-        showError("Configuration Error", "Backend URL is not configured. Please contact the administrator.")
-        setIsLoading(false)
-        return
-      }
-
-      const url = `${backendUrl}/api/collections/${currentUsername}/submissions/${cleanId}`
-      console.log("[v0] Deleting submission at:", url)
-
-      const res = await fetch(url, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+      const res = await fetch(url, { method: "DELETE", headers: { "Content-Type": "application/json" } })
 
       if (res.ok) {
         setIsDeleteModalOpen(false)
@@ -187,15 +158,10 @@ function SubmissionsList({ submissions: initialSubmissions, collectionUsername }
         showSuccess("Success!", "Submission has been deleted successfully.")
       } else {
         const errorData = await res.json()
-        console.log("[v0] Delete API error:", errorData)
         showError("Delete Failed", errorData.error || "Unable to delete submission. Please try again.")
       }
     } catch (err) {
-      console.error("[v0] Delete network error:", err)
-      showError(
-        "Network Error",
-        "Unable to delete submission. Please check if the backend server is running and accessible.",
-      )
+      showError("Network Error", "Unable to delete submission. Please check your connection.")
     } finally {
       setIsLoading(false)
     }
@@ -208,29 +174,22 @@ function SubmissionsList({ submissions: initialSubmissions, collectionUsername }
       return
     }
 
-    if (!username && currentUsername) {
-      setUsername(currentUsername)
-    }
-
     if (!submission || !submission._id) {
       showError("Error", "Invalid submission data")
       return
     }
 
-    const editDataToSet = {
+    setEditData({
       _id: submission._id.toString(),
       teamName: submission.teamName || "",
       teamSerial: submission.teamSerial || "",
       slideLink: submission.slideLink || "",
-    }
-
-    setEditData(editDataToSet)
+    })
     setIsEditModalOpen(true)
   }
 
   const handleUpdateSubmit = async (e) => {
     e.preventDefault()
-
     const currentUsername = username || getUsername()
 
     if (!editData._id) {
@@ -248,21 +207,11 @@ function SubmissionsList({ submissions: initialSubmissions, collectionUsername }
       return
     }
 
-    const cleanId = editData._id.toString().match(/[a-f\d]{24}/i)?.[0] || editData._id
-    console.log("[v0] Original ID:", editData._id, "Clean ID:", cleanId)
-
     setIsLoading(true)
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
-
-      if (!backendUrl) {
-        showError("Configuration Error", "Backend URL is not configured. Please contact the administrator.")
-        setIsLoading(false)
-        return
-      }
-
-      const updateUrl = `${backendUrl}/api/collections/${currentUsername}/submissions/${cleanId}`
-      console.log("[v0] Updating submission at:", updateUrl)
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"
+      const updateUrl = `${backendUrl}/api/collections/${currentUsername}/submissions/${editData._id}`
+      console.log("✏️ Updating:", updateUrl)
 
       const requestBody = {
         teamName: editData.teamName.trim(),
@@ -272,38 +221,25 @@ function SubmissionsList({ submissions: initialSubmissions, collectionUsername }
 
       const res = await fetch(updateUrl, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody),
       })
 
       if (res.ok) {
         setIsEditModalOpen(false)
-        setEditData({
-          _id: "",
-          teamName: "",
-          teamSerial: "",
-          slideLink: "",
-        })
+        setEditData({ _id: "", teamName: "", teamSerial: "", slideLink: "" })
         await refreshSubmissions()
         showSuccess("Success!", "Submission has been updated successfully.")
       } else {
         const errorData = await res.json()
-        console.log("[v0] Update API error:", errorData)
         showError("Update Failed", errorData.error || "Unable to update submission. Please try again.")
       }
     } catch (err) {
-      console.error("[v0] Update network error:", err)
-      showError(
-        "Network Error",
-        "Unable to update submission. Please check if the backend server is running and accessible.",
-      )
+      showError("Network Error", "Unable to update submission. Please check your connection.")
     } finally {
       setIsLoading(false)
     }
   }
-
   return (
     <div className="bg-white rounded-b-2xl shadow-sm border border-gray-100 border-t-0">
       {/* Header */}
@@ -383,7 +319,7 @@ function SubmissionsList({ submissions: initialSubmissions, collectionUsername }
                   </a>
 
                   {/* Desktop buttons */}
-                  <button
+                  {/* <button
                     onClick={() => openEditModal(submission)}
                     disabled={isLoading}
                     className="hidden md:inline-flex items-center justify-center bg-yellow-500 text-white px-4 py-3 rounded-xl font-semibold hover:bg-yellow-600 disabled:opacity-50 transition-colors duration-200"
@@ -396,11 +332,11 @@ function SubmissionsList({ submissions: initialSubmissions, collectionUsername }
                     className="hidden md:inline-flex items-center justify-center bg-red-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-red-700 disabled:opacity-50 transition-colors duration-200"
                   >
                     <Trash2 className="w-4 h-4" />
-                  </button>
+                  </button> */}
 
                   {/* Mobile buttons */}
                   <div className="flex md:hidden gap-2 w-full">
-                    <button
+                    {/* <button
                       onClick={() => openEditModal(submission)}
                       disabled={isLoading}
                       className="flex-1 inline-flex items-center justify-center bg-yellow-500 text-white px-4 py-3 rounded-xl font-semibold hover:bg-yellow-600 disabled:opacity-50 transition-colors duration-200"
@@ -415,7 +351,7 @@ function SubmissionsList({ submissions: initialSubmissions, collectionUsername }
                     >
                       <Trash2 className="w-4 h-4 mr-1" />
                       Delete
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </div>
@@ -576,5 +512,3 @@ function SubmissionsList({ submissions: initialSubmissions, collectionUsername }
     </div>
   )
 }
-
-export default SubmissionsList

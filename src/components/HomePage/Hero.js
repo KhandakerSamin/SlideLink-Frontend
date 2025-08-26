@@ -127,8 +127,7 @@ export default function Hero() {
             <div className={`mb-4 ${isVisible ? 'hero-animate' : 'opacity-0'}`}>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-tight">
                 <span className="text-gray-900 block mb-2">
-                  Share Your Presentation Slides
-                </span>
+                  Share Your Presentation <br /> Slides
                 <GradientText
                   className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-tight"
                   colors={["#3b82f6", "#a855f7", "#ec4899", "#3b82f6"]}
@@ -137,12 +136,13 @@ export default function Hero() {
                 >
                   Effortlessly
                 </GradientText>
+                </span>
               </h1>
             </div>
 
             {/* Subtitle */}
-            <div className={`mb-12 ${isVisible ? 'hero-animate-delay' : 'opacity-0'}`}>
-              <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 font-medium leading-relaxed max-w-3xl mx-auto">
+            <div className={`mb-8 ${isVisible ? 'hero-animate-delay' : 'opacity-0'}`}>
+              <p className="text-md sm:text-lg lg:text-xl text-gray-600 font-medium leading-relaxed max-w-3xl mx-auto">
                 Transform chaotic Excel sheets into organized slide collections. Perfect for university classes and academic collaboration.
               </p>
             </div>
@@ -168,7 +168,7 @@ export default function Hero() {
             </div>
 
             {/* Trust indicators or additional info */}
-            <div className={`mt-16 pt-8 border-t border-gray-200/50 ${isVisible ? 'hero-animate-delay-2' : 'opacity-0'}`}>
+            <div className={`mt-16 pt-6 border-t border-gray-200/50 ${isVisible ? 'hero-animate-delay-2' : 'opacity-0'}`}>
               <div className="flex flex-wrap justify-center items-center gap-8 text-sm text-gray-500">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>

@@ -96,7 +96,7 @@ export default function Navbar() {
         {/* Gradient border effect */}
         <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-violet-500/20 to-blue-500/20 blur-xl opacity-30"></div>
         
-        <div className="relative bg-white/95  border-gray-200/50 shadow-black/5">
+        <div className="relative bg-white/95  border-gray-200/50 ">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <div className="flex items-center justify-between h-20">
               {/* Logo with enhanced styling */}

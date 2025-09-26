@@ -34,18 +34,11 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
   const [modalMessage, setModalMessage] = useState("")
   const [modalTitle, setModalTitle] = useState("")
 
-  // ✅ Improved getUsername function
+  // ✅ Fixed getUsername function - removed localStorage/sessionStorage usage
   const getUsername = () => {
     if (collectionUsername) {
       return collectionUsername
     }
-
-    // Local/session storage
-    const storedUser = localStorage.getItem("username")
-    if (storedUser) return storedUser
-
-    const sessionUser = sessionStorage.getItem("username")
-    if (sessionUser) return sessionUser
 
     if (typeof window !== "undefined") {
       const pathParts = window.location.pathname.split("/").filter(Boolean)
@@ -67,12 +60,8 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
 
   useEffect(() => {
     const foundUsername = getUsername()
-    console.log("🔎 Found username:", foundUsername) // Debug log
+    console.log("🔎 Found username:", foundUsername)
     setUsername(foundUsername)
-
-    if (foundUsername) {
-      localStorage.setItem("username", foundUsername)
-    }
   }, [collectionUsername])
 
   // Success Modal
@@ -89,6 +78,7 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
     setShowErrorModal(true)
   }
 
+  // ✅ Fixed refreshSubmissions function
   const refreshSubmissions = async () => {
     const currentUsername = username || getUsername()
     console.log("📡 Refreshing submissions for:", currentUsername)
@@ -109,17 +99,22 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
         const data = await res.json()
         setSubmissions(data.submissions || [])
       } else {
+        const errorText = await res.text()
+        console.error("Fetch error:", errorText)
         showError("Error", `Failed to fetch submissions: ${res.status}`)
       }
     } catch (error) {
+      console.error("Network error:", error)
       showError("Network Error", "Unable to fetch submissions. Please check your connection.")
     }
   }
 
+  // ✅ Added filteredSubmissions
   const filteredSubmissions = submissions.filter((submission) =>
     submission.teamName?.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
+  // ✅ Added handleDeleteClick function
   const handleDeleteClick = (submissionId) => {
     const currentUsername = username || getUsername()
     if (!currentUsername) {
@@ -127,10 +122,17 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
       return
     }
 
+    if (!submissionId) {
+      showError("Error", "Submission ID is missing")
+      return
+    }
+
+    console.log("🗑️ Preparing to delete submission:", submissionId)
     setDeleteId(submissionId)
     setIsDeleteModalOpen(true)
   }
 
+  // ✅ Added confirmDelete function
   const confirmDelete = async () => {
     const currentUsername = username || getUsername()
     if (!deleteId) {
@@ -149,7 +151,12 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
       const url = `${backendUrl}/api/collections/${currentUsername}/submissions/${deleteId}`
       console.log("🗑️ Deleting:", url)
 
-      const res = await fetch(url, { method: "DELETE", headers: { "Content-Type": "application/json" } })
+      const res = await fetch(url, { 
+        method: "DELETE", 
+        headers: { 
+          "Content-Type": "application/json" 
+        } 
+      })
 
       if (res.ok) {
         setIsDeleteModalOpen(false)
@@ -157,16 +164,19 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
         await refreshSubmissions()
         showSuccess("Success!", "Submission has been deleted successfully.")
       } else {
-        const errorData = await res.json()
+        const errorData = await res.json().catch(() => ({ error: "Unknown error occurred" }))
+        console.error("Delete error:", errorData)
         showError("Delete Failed", errorData.error || "Unable to delete submission. Please try again.")
       }
     } catch (err) {
+      console.error("Delete network error:", err)
       showError("Network Error", "Unable to delete submission. Please check your connection.")
     } finally {
       setIsLoading(false)
     }
   }
 
+  // ✅ Added openEditModal function
   const openEditModal = (submission) => {
     const currentUsername = username || getUsername()
     if (!currentUsername) {
@@ -179,6 +189,7 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
       return
     }
 
+    console.log("✏️ Opening edit modal for:", submission)
     setEditData({
       _id: submission._id.toString(),
       teamName: submission.teamName || "",
@@ -188,8 +199,8 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
     setIsEditModalOpen(true)
   }
 
-  const handleUpdateSubmit = async (e) => {
-    e.preventDefault()
+  // ✅ Added handleUpdateSubmit function
+  const handleUpdateSubmit = async () => {
     const currentUsername = username || getUsername()
 
     if (!editData._id) {
@@ -219,6 +230,8 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
         slideLink: editData.slideLink.trim(),
       }
 
+      console.log("✏️ Update request body:", requestBody)
+
       const res = await fetch(updateUrl, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -231,15 +244,18 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
         await refreshSubmissions()
         showSuccess("Success!", "Submission has been updated successfully.")
       } else {
-        const errorData = await res.json()
+        const errorData = await res.json().catch(() => ({ error: "Unknown error occurred" }))
+        console.error("Update error:", errorData)
         showError("Update Failed", errorData.error || "Unable to update submission. Please try again.")
       }
     } catch (err) {
+      console.error("Update network error:", err)
       showError("Network Error", "Unable to update submission. Please check your connection.")
     } finally {
       setIsLoading(false)
     }
   }
+
   return (
     <div className="bg-white rounded-b-2xl shadow-sm border border-gray-100 border-t-0">
       {/* Header */}
@@ -319,7 +335,7 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
                   </a>
 
                   {/* Desktop buttons */}
-                  {/* <button
+                  <button
                     onClick={() => openEditModal(submission)}
                     disabled={isLoading}
                     className="hidden md:inline-flex items-center justify-center bg-yellow-500 text-white px-4 py-3 rounded-xl font-semibold hover:bg-yellow-600 disabled:opacity-50 transition-colors duration-200"
@@ -332,11 +348,11 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
                     className="hidden md:inline-flex items-center justify-center bg-red-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-red-700 disabled:opacity-50 transition-colors duration-200"
                   >
                     <Trash2 className="w-4 h-4" />
-                  </button> */}
+                  </button>
 
                   {/* Mobile buttons */}
                   <div className="flex md:hidden gap-2 w-full">
-                    {/* <button
+                    <button
                       onClick={() => openEditModal(submission)}
                       disabled={isLoading}
                       className="flex-1 inline-flex items-center justify-center bg-yellow-500 text-white px-4 py-3 rounded-xl font-semibold hover:bg-yellow-600 disabled:opacity-50 transition-colors duration-200"
@@ -351,7 +367,7 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
                     >
                       <Trash2 className="w-4 h-4 mr-1" />
                       Delete
-                    </button> */}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -412,7 +428,7 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
               </button>
             </div>
 
-            <form onSubmit={handleUpdateSubmit} className="space-y-4">
+            <div className="space-y-4">
               <div>
                 <label className="block text-sm text-gray-900 font-medium mb-1">Team Name *</label>
                 <input
@@ -420,7 +436,6 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
                   value={editData.teamName}
                   onChange={(e) => setEditData({ ...editData, teamName: e.target.value })}
                   className="w-full border text-gray-900 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                  required
                   disabled={isLoading}
                 />
               </div>
@@ -431,7 +446,6 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
                   value={editData.teamSerial}
                   onChange={(e) => setEditData({ ...editData, teamSerial: e.target.value })}
                   className="w-full border rounded-lg text-gray-900 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                  required
                   disabled={isLoading}
                 />
               </div>
@@ -442,7 +456,6 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
                   value={editData.slideLink}
                   onChange={(e) => setEditData({ ...editData, slideLink: e.target.value })}
                   className="w-full border rounded-lg text-gray-900 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                  required
                   disabled={isLoading}
                 />
               </div>
@@ -456,14 +469,15 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
                   Cancel
                 </button>
                 <button
-                  type="submit"
+                  type="button"
+                  onClick={handleUpdateSubmit}
                   disabled={isLoading}
                   className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 transition"
                 >
                   {isLoading ? "Saving..." : "Save Changes"}
                 </button>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       )}

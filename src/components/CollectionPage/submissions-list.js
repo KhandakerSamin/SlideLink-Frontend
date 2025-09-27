@@ -34,140 +34,79 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
   const [modalMessage, setModalMessage] = useState("")
   const [modalTitle, setModalTitle] = useState("")
 
-  // ✅ Fixed getUsername function to properly handle /collections/ routes
   const getUsername = () => {
-    console.log("🔄 getUsername() called")
-    
-    // First priority: use collectionUsername prop
     if (collectionUsername) {
-      console.log("🎯 Using collectionUsername prop:", collectionUsername)
       return collectionUsername
     }
 
     if (typeof window !== "undefined") {
-      const fullPath = window.location.pathname
-      const fullUrl = window.location.href
-      const pathParts = fullPath.split("/").filter(Boolean)
+      const pathParts = window.location.pathname.split("/").filter(Boolean)
       
-      console.log("🌐 Full URL:", fullUrl)
-      console.log("📍 Full pathname:", fullPath)
-      console.log("🔍 Path parts:", pathParts)
-
-      // FIXED: Handle /collections/<username>/... pattern correctly
       const collectionsIndex = pathParts.indexOf("collections")
       if (collectionsIndex !== -1 && pathParts[collectionsIndex + 1]) {
-        const foundUsername = pathParts[collectionsIndex + 1]
-        console.log("✅ Pattern: /collections/<username>/... - Found username:", foundUsername)
-        return foundUsername
+        return pathParts[collectionsIndex + 1]
       }
 
-      // Pattern: /collection/<username>/... (singular)
       const collectionIndex = pathParts.indexOf("collection")
       if (collectionIndex !== -1 && pathParts[collectionIndex + 1]) {
-        const foundUsername = pathParts[collectionIndex + 1]
-        console.log("✅ Pattern: /collection/<username>/... - Found username:", foundUsername)
-        return foundUsername
+        return pathParts[collectionIndex + 1]
       }
 
-      // Pattern: /<username>/submissions
       const submissionsIndex = pathParts.indexOf("submissions")
       if (submissionsIndex !== -1 && submissionsIndex > 0) {
         const potentialUsername = pathParts[submissionsIndex - 1]
-        // Make sure it's not "collections" or "collection"
         if (potentialUsername !== "collections" && potentialUsername !== "collection") {
-          console.log("✅ Pattern: /<username>/submissions - Found username:", potentialUsername)
           return potentialUsername
         }
       }
 
-      // Pattern: /submissions/<username>
       if (submissionsIndex !== -1 && pathParts[submissionsIndex + 1]) {
-        const foundUsername = pathParts[submissionsIndex + 1]
-        console.log("✅ Pattern: /submissions/<username> - Found username:", foundUsername)
-        return foundUsername
+        return pathParts[submissionsIndex + 1]
       }
 
-      // Pattern: Just /<username> (single path part that's not "collections")
       if (pathParts.length === 1 && pathParts[0] && pathParts[0] !== "collections" && pathParts[0] !== "collection") {
-        const potentialUsername = pathParts[0]
-        console.log("✅ Pattern: /<username> - Found username:", potentialUsername)
-        return potentialUsername
+        return pathParts[0]
       }
 
-      // Pattern: /<username>/any-other-page (but not collections or collection)
       if (pathParts.length >= 2 && pathParts[0] && pathParts[0] !== "collections" && pathParts[0] !== "collection") {
-        const potentialUsername = pathParts[0]
-        console.log("✅ Pattern: /<username>/... - Found username:", potentialUsername)
-        return potentialUsername
+        return pathParts[0]
       }
 
-      // Fallback: check query parameters
       const urlParams = new URLSearchParams(window.location.search)
       const paramUsername = urlParams.get("username") || urlParams.get("u") || urlParams.get("collection")
       if (paramUsername) {
-        console.log("✅ Found username in query params:", paramUsername)
         return paramUsername
       }
-
-      console.log("❌ No username found in any pattern")
-      console.log("🔍 Available path parts for manual inspection:", pathParts)
-    } else {
-      console.log("❌ Window object not available (SSR)")
     }
 
     return ""
   }
 
   useEffect(() => {
-    console.log("🚀 useEffect triggered")
-    console.log("📦 collectionUsername prop:", collectionUsername)
-    console.log("📊 initialSubmissions:", initialSubmissions?.length || 0)
-    
     const foundUsername = getUsername()
-    console.log("🔎 Initial username search result:", foundUsername)
+    setUsername(foundUsername)
     
-    if (foundUsername) {
-      setUsername(foundUsername)
-      
-      // If we have a username and no submissions, try to fetch them
-      if (!initialSubmissions || initialSubmissions.length === 0) {
-        console.log("📡 Auto-fetching submissions for username:", foundUsername)
-        refreshSubmissions(foundUsername)
-      }
-    } else {
-      console.log("⚠️ No username found in useEffect")
-      // Try again after a small delay in case the component is still mounting
-      setTimeout(() => {
-        const retryUsername = getUsername()
-        console.log("🔄 Retry username search:", retryUsername)
-        if (retryUsername) {
-          setUsername(retryUsername)
-        }
-      }, 100)
+    if (foundUsername && (!initialSubmissions || initialSubmissions.length === 0)) {
+      refreshSubmissions(foundUsername)
     }
   }, [collectionUsername, initialSubmissions])
 
-  // Success Modal
   const showSuccess = (title, message) => {
     setModalTitle(title)
     setModalMessage(message)
     setShowSuccessModal(true)
   }
 
-  // Error Modal
   const showError = (title, message) => {
     setModalTitle(title)
     setModalMessage(message)
     setShowErrorModal(true)
   }
 
-  // ✅ Enhanced refreshSubmissions function
   const refreshSubmissions = async (usernameParam = null) => {
     const currentUsername = usernameParam || username || getUsername()
-    console.log("📡 Refreshing submissions for username:", currentUsername)
 
     if (!currentUsername) {
-      console.error("❌ No username available for refresh")
       showError("Error", "No username found. Please make sure you're accessing this page correctly.")
       return
     }
@@ -175,7 +114,6 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
     try {
       const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"
       const url = `${backendUrl}/api/collections/${currentUsername}/submissions`
-      console.log("🌍 Fetching submissions from:", url)
 
       const res = await fetch(url, {
         method: 'GET',
@@ -186,71 +124,35 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
 
       if (res.ok) {
         const data = await res.json()
-        console.log("✅ Submissions fetched successfully:", data.submissions?.length || 0, "items")
         setSubmissions(data.submissions || [])
       } else {
         const errorText = await res.text()
-        console.error("❌ Fetch error:", res.status, errorText)
         showError("Error", `Failed to fetch submissions: ${res.status} - ${errorText}`)
       }
     } catch (error) {
-      console.error("❌ Network error:", error)
       showError("Network Error", "Unable to fetch submissions. Please check your connection.")
     }
   }
 
-  // ✅ Enhanced filteredSubmissions
   const filteredSubmissions = submissions.filter((submission) =>
     submission.teamName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     submission.teamSerial?.toString().includes(searchTerm)
   )
 
-  // ✅ Enhanced handleDeleteClick function with better debugging
   const handleDeleteClick = (submissionId) => {
-    console.log("🗑️ DELETE BUTTON CLICKED")
-    console.log("🗑️ Current username state:", username)
-    console.log("🗑️ Submission ID:", submissionId)
-    
-    // Try multiple methods to get username
-    let currentUsername = username
-    if (!currentUsername) {
-      console.log("🗑️ Username not in state, trying getUsername()")
-      currentUsername = getUsername()
-      console.log("🗑️ getUsername() returned:", currentUsername)
-    }
-    
-    // If still no username, try to extract from collectionUsername prop
-    if (!currentUsername && collectionUsername) {
-      console.log("🗑️ Using collectionUsername prop as fallback:", collectionUsername)
-      currentUsername = collectionUsername
-    }
-    
-    console.log("🗑️ Final username to use:", currentUsername)
+    const currentUsername = username || getUsername()
     
     if (!currentUsername) {
-      console.error("❌ Username not found for delete operation")
-      console.error("❌ Debug info:")
-      console.error("   - username state:", username)
-      console.error("   - collectionUsername prop:", collectionUsername)
-      console.error("   - getUsername() result:", getUsername())
-      console.error("   - window.location:", typeof window !== "undefined" ? window.location.href : "N/A")
-      
-      showError("Error", "Username not found. Please refresh the page and try again. If the problem persists, check the URL structure.")
+      showError("Error", "Username not found. Please refresh the page and try again.")
       return
     }
 
     if (!submissionId) {
-      console.error("❌ Submission ID is missing")
       showError("Error", "Submission ID is missing")
       return
     }
 
-    console.log("🗑️ Preparing to delete submission:", submissionId)
-    console.log("🗑️ Using username:", currentUsername)
-    
-    // Update the state with the found username if it wasn't set
     if (!username && currentUsername) {
-      console.log("🗑️ Updating username state:", currentUsername)
       setUsername(currentUsername)
     }
     
@@ -258,16 +160,8 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
     setIsDeleteModalOpen(true)
   }
 
-  // 🔍 Enhanced confirmDelete with maximum debugging
   const confirmDelete = async () => {
     const currentUsername = username || getUsername()
-    console.log("🗑️ CONFIRMING DELETE - FULL DEBUG")
-    console.log("🗑️ Username from state:", username)
-    console.log("🗑️ Username from getUsername():", getUsername())
-    console.log("🗑️ Final username:", currentUsername)
-    console.log("🗑️ Delete ID:", deleteId)
-    console.log("🗑️ Delete ID type:", typeof deleteId)
-    console.log("🗑️ collectionUsername prop:", collectionUsername)
     
     if (!deleteId) {
       showError("Error", "Submission ID is missing")
@@ -283,15 +177,7 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
     try {
       const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"
       const url = `${backendUrl}/api/collections/${currentUsername}/submissions/${deleteId}`
-      
-      console.log("🗑️ COMPLETE REQUEST DETAILS:")
-      console.log("   - Backend URL:", backendUrl)
-      console.log("   - Full URL:", url)
-      console.log("   - Method: DELETE")
-      console.log("   - Headers: Content-Type: application/json")
 
-      // Make the request and log everything
-      console.log("🗑️ Making fetch request...")
       const res = await fetch(url, { 
         method: "DELETE", 
         headers: { 
@@ -299,126 +185,36 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
         } 
       })
 
-      console.log("🗑️ RESPONSE RECEIVED:")
-      console.log("   - Status:", res.status)
-      console.log("   - Status Text:", res.statusText)
-      console.log("   - OK:", res.ok)
-      console.log("   - Headers:", Object.fromEntries(res.headers.entries()))
-
-      // Clone response to read it multiple times
-      const responseClone = res.clone()
-      
-      // Try to get both text and JSON
-      let responseText = ""
-      let responseJson = null
-      
-      try {
-        responseText = await res.text()
-        console.log("🗑️ Raw response text:", responseText)
-        console.log("🗑️ Response text length:", responseText.length)
-      } catch (textError) {
-        console.error("❌ Failed to read response as text:", textError)
-      }
-
-      if (responseText) {
-        try {
-          responseJson = JSON.parse(responseText)
-          console.log("🗑️ Parsed JSON:", responseJson)
-        } catch (jsonError) {
-          console.log("🗑️ Response is not valid JSON:", jsonError.message)
-        }
-      }
-
       if (res.ok) {
-        console.log("✅ Delete appears successful based on status code")
         setIsDeleteModalOpen(false)
         setDeleteId(null)
         await refreshSubmissions(currentUsername)
         showSuccess("Success!", "Submission has been deleted successfully.")
       } else {
-        console.log("❌ Delete failed based on status code")
-        
-        let errorMessage = "Unknown error occurred"
-        
-        if (responseJson && responseJson.error) {
-          errorMessage = responseJson.error
-        } else if (responseJson && responseJson.message) {
-          errorMessage = responseJson.message
-        } else if (responseText) {
-          errorMessage = responseText
-        } else {
-          errorMessage = `HTTP ${res.status}: ${res.statusText}`
-        }
-        
-        console.error("❌ Final error message:", errorMessage)
-        console.error("❌ Complete error context:", {
-          status: res.status,
-          statusText: res.statusText,
-          responseText,
-          responseJson
-        })
-        
-        showError("Delete Failed", errorMessage)
+        const errorData = await res.json().catch(() => ({ error: "Unable to delete submission" }))
+        showError("Delete Failed", errorData.error || "Unable to delete submission. Please try again.")
       }
     } catch (err) {
-      console.error("❌ DELETE NETWORK ERROR:")
-      console.error("   - Error name:", err.name)
-      console.error("   - Error message:", err.message)
-      console.error("   - Error stack:", err.stack)
-      console.error("   - Full error object:", err)
-      
-      showError("Network Error", `Unable to delete submission. Network error: ${err.message}`)
+      showError("Network Error", "Unable to delete submission. Please check your connection.")
     } finally {
       setIsLoading(false)
     }
   }
 
-  // ✅ Enhanced openEditModal function with better debugging  
   const openEditModal = (submission) => {
-    console.log("✏️ EDIT BUTTON CLICKED")
-    console.log("✏️ Current username state:", username)
-    console.log("✏️ Submission:", submission)
-    
-    // Try multiple methods to get username
-    let currentUsername = username
-    if (!currentUsername) {
-      console.log("✏️ Username not in state, trying getUsername()")
-      currentUsername = getUsername()
-      console.log("✏️ getUsername() returned:", currentUsername)
-    }
-    
-    // If still no username, try to extract from collectionUsername prop
-    if (!currentUsername && collectionUsername) {
-      console.log("✏️ Using collectionUsername prop as fallback:", collectionUsername)
-      currentUsername = collectionUsername
-    }
-    
-    console.log("✏️ Final username to use:", currentUsername)
+    const currentUsername = username || getUsername()
     
     if (!currentUsername) {
-      console.error("❌ Username not found for edit operation")
-      console.error("❌ Debug info:")
-      console.error("   - username state:", username)
-      console.error("   - collectionUsername prop:", collectionUsername)
-      console.error("   - getUsername() result:", getUsername())
-      console.error("   - window.location:", typeof window !== "undefined" ? window.location.href : "N/A")
-      
-      showError("Error", "Username not found. Please refresh the page and try again. If the problem persists, check the URL structure.")
+      showError("Error", "Username not found. Please refresh the page and try again.")
       return
     }
 
     if (!submission || !submission._id) {
-      console.error("❌ Invalid submission data:", submission)
       showError("Error", "Invalid submission data")
       return
     }
 
-    console.log("✏️ Opening edit modal for submission ID:", submission._id)
-    console.log("✏️ Using username:", currentUsername)
-    
-    // Update the state with the found username if it wasn't set
     if (!username && currentUsername) {
-      console.log("✏️ Updating username state:", currentUsername)
       setUsername(currentUsername)
     }
     
@@ -431,12 +227,8 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
     setIsEditModalOpen(true)
   }
 
-  // ✅ Enhanced handleUpdateSubmit function with detailed error handling
   const handleUpdateSubmit = async () => {
     const currentUsername = username || getUsername()
-    console.log("✏️ UPDATE SUBMIT")
-    console.log("✏️ Username:", currentUsername)
-    console.log("✏️ Edit data:", editData)
 
     if (!editData._id) {
       showError("Error", "Submission ID is missing")
@@ -464,64 +256,23 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
         slideLink: editData.slideLink.trim(),
       }
 
-      console.log("✏️ UPDATE REQUEST DETAILS:")
-      console.log("   - URL:", updateUrl)
-      console.log("   - Method: PUT")
-      console.log("   - Body:", requestBody)
-
       const res = await fetch(updateUrl, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody),
       })
 
-      console.log("✏️ UPDATE RESPONSE:")
-      console.log("   - Status:", res.status)
-      console.log("   - Status Text:", res.statusText)
-      console.log("   - OK:", res.ok)
-
-      // Get response text first to see what we're dealing with
-      const responseText = await res.text()
-      console.log("✏️ Raw response text:", responseText)
-
       if (res.ok) {
-        console.log("✅ Update successful")
         setIsEditModalOpen(false)
         setEditData({ _id: "", teamName: "", teamSerial: "", slideLink: "" })
         await refreshSubmissions(currentUsername)
         showSuccess("Success!", "Submission has been updated successfully.")
       } else {
-        console.log("❌ Update failed - attempting to parse error")
-        
-        let errorData = { error: "Unknown error occurred" }
-        
-        if (responseText) {
-          try {
-            errorData = JSON.parse(responseText)
-            console.log("❌ Parsed error data:", errorData)
-          } catch (parseError) {
-            console.log("❌ Failed to parse error response, using raw text")
-            errorData = { error: responseText }
-          }
-        }
-        
-        console.error("❌ Update failed:", errorData)
-        
-        const errorMessage = errorData.error || 
-                            errorData.message || 
-                            `HTTP ${res.status}: ${res.statusText}` ||
-                            "Unable to update submission. Please try again."
-        
-        showError("Update Failed", errorMessage)
+        const errorData = await res.json().catch(() => ({ error: "Unable to update submission" }))
+        showError("Update Failed", errorData.error || "Unable to update submission. Please try again.")
       }
     } catch (err) {
-      console.error("❌ Update network error:", err)
-      console.error("❌ Error details:", {
-        name: err.name,
-        message: err.message,
-        stack: err.stack
-      })
-      showError("Network Error", `Unable to update submission. Network error: ${err.message}`)
+      showError("Network Error", "Unable to update submission. Please check your connection.")
     } finally {
       setIsLoading(false)
     }
@@ -535,12 +286,6 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
           <div className="mb-6 lg:mb-0">
             <h2 className="text-2xl font-bold mb-2">All Submissions</h2>
             <p className="text-purple-100">View all submitted presentation slides</p>
-            {/* Debug info - Enhanced for better troubleshooting */}
-            <div className="text-xs text-purple-200 mt-1 space-y-1">
-              <div>Username: {username || 'Not found'}</div>
-              <div>Prop: {collectionUsername || 'None'}</div>
-              <div>URL: {typeof window !== "undefined" ? window.location.pathname : 'N/A'}</div>
-            </div>
           </div>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-purple-300" />

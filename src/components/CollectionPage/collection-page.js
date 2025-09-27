@@ -21,6 +21,10 @@ export default function CollectionPage() {
   const [passwordInput, setPasswordInput] = useState(password || "")
   const [activeTab, setActiveTab] = useState("submit")
 
+  // Debug logging to help troubleshoot
+  console.log("🏠 CollectionPage - Username from params:", username)
+  console.log("🏠 CollectionPage - Current URL:", typeof window !== "undefined" ? window.location.href : "N/A")
+
   useEffect(() => {
     const savedAuth = localStorage.getItem(`auth_${username}`)
     if (savedAuth) {
@@ -86,6 +90,7 @@ export default function CollectionPage() {
       if (response.ok) {
         const data = await response.json()
         setSubmissions(data.submissions)
+        console.log("✅ Loaded submissions:", data.submissions?.length || 0)
       }
     } catch (error) {
       console.error("Failed to load submissions:", error)
@@ -118,11 +123,14 @@ export default function CollectionPage() {
           {activeTab === "submit" ? (
             <SubmitForm username={username} onSubmissionSuccess={loadSubmissions} />
           ) : (
-            <SubmissionsList submissions={submissions} />
+            // ✅ FIXED: Pass the username as collectionUsername prop
+            <SubmissionsList 
+              submissions={submissions} 
+              collectionUsername={username}
+            />
           )}
         </div>
       </div>
     </div>
   )
 }
-

@@ -34,7 +34,7 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
   const [modalMessage, setModalMessage] = useState("")
   const [modalTitle, setModalTitle] = useState("")
 
-  // ✅ Improved getUsername function with extensive debugging
+  // ✅ Fixed getUsername function to properly handle /collections/ routes
   const getUsername = () => {
     console.log("🔄 getUsername() called")
     
@@ -53,48 +53,51 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
       console.log("📍 Full pathname:", fullPath)
       console.log("🔍 Path parts:", pathParts)
 
-      // Handle different route patterns with extensive logging:
-      // Common patterns:
-      // /collection/<username>/submissions
-      // /<username>/submissions  
-      // /submissions/<username>
-      // /<username>
-      
-      // Pattern 1: /collection/<username>/submissions
-      const collectionIndex = pathParts.indexOf("collection")
-      if (collectionIndex !== -1 && pathParts[collectionIndex + 1]) {
-        const foundUsername = pathParts[collectionIndex + 1]
-        console.log("✅ Pattern 1 (/collection/<username>/...): Found username:", foundUsername)
+      // FIXED: Handle /collections/<username>/... pattern correctly
+      const collectionsIndex = pathParts.indexOf("collections")
+      if (collectionsIndex !== -1 && pathParts[collectionsIndex + 1]) {
+        const foundUsername = pathParts[collectionsIndex + 1]
+        console.log("✅ Pattern: /collections/<username>/... - Found username:", foundUsername)
         return foundUsername
       }
 
-      // Pattern 2: /<username>/submissions
+      // Pattern: /collection/<username>/... (singular)
+      const collectionIndex = pathParts.indexOf("collection")
+      if (collectionIndex !== -1 && pathParts[collectionIndex + 1]) {
+        const foundUsername = pathParts[collectionIndex + 1]
+        console.log("✅ Pattern: /collection/<username>/... - Found username:", foundUsername)
+        return foundUsername
+      }
+
+      // Pattern: /<username>/submissions
       const submissionsIndex = pathParts.indexOf("submissions")
-      if (submissionsIndex !== -1) {
-        if (submissionsIndex > 0 && pathParts[submissionsIndex - 1]) {
-          const foundUsername = pathParts[submissionsIndex - 1]
-          console.log("✅ Pattern 2 (/<username>/submissions): Found username:", foundUsername)
-          return foundUsername
-        }
-        // Pattern 3: /submissions/<username>
-        if (pathParts[submissionsIndex + 1]) {
-          const foundUsername = pathParts[submissionsIndex + 1]
-          console.log("✅ Pattern 3 (/submissions/<username>): Found username:", foundUsername)
-          return foundUsername
+      if (submissionsIndex !== -1 && submissionsIndex > 0) {
+        const potentialUsername = pathParts[submissionsIndex - 1]
+        // Make sure it's not "collections" or "collection"
+        if (potentialUsername !== "collections" && potentialUsername !== "collection") {
+          console.log("✅ Pattern: /<username>/submissions - Found username:", potentialUsername)
+          return potentialUsername
         }
       }
 
-      // Pattern 4: Just /<username> (single path part)
-      if (pathParts.length === 1 && pathParts[0]) {
+      // Pattern: /submissions/<username>
+      if (submissionsIndex !== -1 && pathParts[submissionsIndex + 1]) {
+        const foundUsername = pathParts[submissionsIndex + 1]
+        console.log("✅ Pattern: /submissions/<username> - Found username:", foundUsername)
+        return foundUsername
+      }
+
+      // Pattern: Just /<username> (single path part that's not "collections")
+      if (pathParts.length === 1 && pathParts[0] && pathParts[0] !== "collections" && pathParts[0] !== "collection") {
         const potentialUsername = pathParts[0]
-        console.log("✅ Pattern 4 (/<username>): Found potential username:", potentialUsername)
+        console.log("✅ Pattern: /<username> - Found username:", potentialUsername)
         return potentialUsername
       }
 
-      // Pattern 5: /<username>/any-other-page
-      if (pathParts.length >= 2 && pathParts[0]) {
+      // Pattern: /<username>/any-other-page (but not collections or collection)
+      if (pathParts.length >= 2 && pathParts[0] && pathParts[0] !== "collections" && pathParts[0] !== "collection") {
         const potentialUsername = pathParts[0]
-        console.log("✅ Pattern 5 (/<username>/...): Found potential username:", potentialUsername)
+        console.log("✅ Pattern: /<username>/... - Found username:", potentialUsername)
         return potentialUsername
       }
 
@@ -255,10 +258,16 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
     setIsDeleteModalOpen(true)
   }
 
-  // ✅ Enhanced confirmDelete function
+  // 🔍 Enhanced confirmDelete with maximum debugging
   const confirmDelete = async () => {
     const currentUsername = username || getUsername()
-    console.log("🗑️ Confirming delete - Username:", currentUsername, "Delete ID:", deleteId)
+    console.log("🗑️ CONFIRMING DELETE - FULL DEBUG")
+    console.log("🗑️ Username from state:", username)
+    console.log("🗑️ Username from getUsername():", getUsername())
+    console.log("🗑️ Final username:", currentUsername)
+    console.log("🗑️ Delete ID:", deleteId)
+    console.log("🗑️ Delete ID type:", typeof deleteId)
+    console.log("🗑️ collectionUsername prop:", collectionUsername)
     
     if (!deleteId) {
       showError("Error", "Submission ID is missing")
@@ -274,8 +283,15 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
     try {
       const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"
       const url = `${backendUrl}/api/collections/${currentUsername}/submissions/${deleteId}`
-      console.log("🗑️ Deleting from URL:", url)
+      
+      console.log("🗑️ COMPLETE REQUEST DETAILS:")
+      console.log("   - Backend URL:", backendUrl)
+      console.log("   - Full URL:", url)
+      console.log("   - Method: DELETE")
+      console.log("   - Headers: Content-Type: application/json")
 
+      // Make the request and log everything
+      console.log("🗑️ Making fetch request...")
       const res = await fetch(url, { 
         method: "DELETE", 
         headers: { 
@@ -283,22 +299,75 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
         } 
       })
 
-      console.log("🗑️ Delete response status:", res.status)
+      console.log("🗑️ RESPONSE RECEIVED:")
+      console.log("   - Status:", res.status)
+      console.log("   - Status Text:", res.statusText)
+      console.log("   - OK:", res.ok)
+      console.log("   - Headers:", Object.fromEntries(res.headers.entries()))
+
+      // Clone response to read it multiple times
+      const responseClone = res.clone()
+      
+      // Try to get both text and JSON
+      let responseText = ""
+      let responseJson = null
+      
+      try {
+        responseText = await res.text()
+        console.log("🗑️ Raw response text:", responseText)
+        console.log("🗑️ Response text length:", responseText.length)
+      } catch (textError) {
+        console.error("❌ Failed to read response as text:", textError)
+      }
+
+      if (responseText) {
+        try {
+          responseJson = JSON.parse(responseText)
+          console.log("🗑️ Parsed JSON:", responseJson)
+        } catch (jsonError) {
+          console.log("🗑️ Response is not valid JSON:", jsonError.message)
+        }
+      }
 
       if (res.ok) {
-        console.log("✅ Delete successful")
+        console.log("✅ Delete appears successful based on status code")
         setIsDeleteModalOpen(false)
         setDeleteId(null)
         await refreshSubmissions(currentUsername)
         showSuccess("Success!", "Submission has been deleted successfully.")
       } else {
-        const errorData = await res.json().catch(() => ({ error: "Unknown error occurred" }))
-        console.error("❌ Delete failed:", errorData)
-        showError("Delete Failed", errorData.error || "Unable to delete submission. Please try again.")
+        console.log("❌ Delete failed based on status code")
+        
+        let errorMessage = "Unknown error occurred"
+        
+        if (responseJson && responseJson.error) {
+          errorMessage = responseJson.error
+        } else if (responseJson && responseJson.message) {
+          errorMessage = responseJson.message
+        } else if (responseText) {
+          errorMessage = responseText
+        } else {
+          errorMessage = `HTTP ${res.status}: ${res.statusText}`
+        }
+        
+        console.error("❌ Final error message:", errorMessage)
+        console.error("❌ Complete error context:", {
+          status: res.status,
+          statusText: res.statusText,
+          responseText,
+          responseJson
+        })
+        
+        showError("Delete Failed", errorMessage)
       }
     } catch (err) {
-      console.error("❌ Delete network error:", err)
-      showError("Network Error", "Unable to delete submission. Please check your connection.")
+      console.error("❌ DELETE NETWORK ERROR:")
+      console.error("   - Error name:", err.name)
+      console.error("   - Error message:", err.message)
+      console.error("   - Error stack:", err.stack)
+      console.error("   - Full error object:", err)
+      
+      showError("Network Error", `Unable to delete submission. Network error: ${err.message}`)
     } finally {
       setIsLoading(false)
     }
@@ -362,10 +431,12 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
     setIsEditModalOpen(true)
   }
 
-  // ✅ Enhanced handleUpdateSubmit function
+  // ✅ Enhanced handleUpdateSubmit function with detailed error handling
   const handleUpdateSubmit = async () => {
     const currentUsername = username || getUsername()
-    console.log("✏️ Update submit - Username:", currentUsername, "Edit data:", editData)
+    console.log("✏️ UPDATE SUBMIT")
+    console.log("✏️ Username:", currentUsername)
+    console.log("✏️ Edit data:", editData)
 
     if (!editData._id) {
       showError("Error", "Submission ID is missing")
@@ -386,15 +457,17 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
     try {
       const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"
       const updateUrl = `${backendUrl}/api/collections/${currentUsername}/submissions/${editData._id}`
-      console.log("✏️ Updating at URL:", updateUrl)
-
+      
       const requestBody = {
         teamName: editData.teamName.trim(),
         teamSerial: editData.teamSerial.trim(),
         slideLink: editData.slideLink.trim(),
       }
 
-      console.log("✏️ Update request body:", requestBody)
+      console.log("✏️ UPDATE REQUEST DETAILS:")
+      console.log("   - URL:", updateUrl)
+      console.log("   - Method: PUT")
+      console.log("   - Body:", requestBody)
 
       const res = await fetch(updateUrl, {
         method: "PUT",
@@ -402,7 +475,14 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
         body: JSON.stringify(requestBody),
       })
 
-      console.log("✏️ Update response status:", res.status)
+      console.log("✏️ UPDATE RESPONSE:")
+      console.log("   - Status:", res.status)
+      console.log("   - Status Text:", res.statusText)
+      console.log("   - OK:", res.ok)
+
+      // Get response text first to see what we're dealing with
+      const responseText = await res.text()
+      console.log("✏️ Raw response text:", responseText)
 
       if (res.ok) {
         console.log("✅ Update successful")
@@ -411,13 +491,37 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
         await refreshSubmissions(currentUsername)
         showSuccess("Success!", "Submission has been updated successfully.")
       } else {
-        const errorData = await res.json().catch(() => ({ error: "Unknown error occurred" }))
+        console.log("❌ Update failed - attempting to parse error")
+        
+        let errorData = { error: "Unknown error occurred" }
+        
+        if (responseText) {
+          try {
+            errorData = JSON.parse(responseText)
+            console.log("❌ Parsed error data:", errorData)
+          } catch (parseError) {
+            console.log("❌ Failed to parse error response, using raw text")
+            errorData = { error: responseText }
+          }
+        }
+        
         console.error("❌ Update failed:", errorData)
-        showError("Update Failed", errorData.error || "Unable to update submission. Please try again.")
+        
+        const errorMessage = errorData.error || 
+                            errorData.message || 
+                            `HTTP ${res.status}: ${res.statusText}` ||
+                            "Unable to update submission. Please try again."
+        
+        showError("Update Failed", errorMessage)
       }
     } catch (err) {
       console.error("❌ Update network error:", err)
-      showError("Network Error", "Unable to update submission. Please check your connection.")
+      console.error("❌ Error details:", {
+        name: err.name,
+        message: err.message,
+        stack: err.stack
+      })
+      showError("Network Error", `Unable to update submission. Network error: ${err.message}`)
     } finally {
       setIsLoading(false)
     }

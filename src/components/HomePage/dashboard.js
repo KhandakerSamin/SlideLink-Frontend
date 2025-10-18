@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { LayoutGrid, FileText, Clock } from "lucide-react"
-import { useAnimatedNumber } from "@/hooks/use-animated-number" // Import the new hook
+import { useAnimatedNumber } from "@/hooks/use-animated-number"
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
@@ -18,12 +18,18 @@ export default function Dashboard() {
       setIsLoading(true)
       setError(null)
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"}/api/dashboard-stats`,
-        )
+        // Use the proxy route instead of direct backend URL
+        const response = await fetch('/api/dashboard-stats', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
+        
         const data = await response.json()
         setStats(data)
       } catch (err) {
@@ -37,7 +43,6 @@ export default function Dashboard() {
     fetchDashboardStats()
   }, [])
 
-  // Use the animated number hook for each stat
   const animatedTotalCollections = useAnimatedNumber(stats.totalCollections, 1500)
   const animatedTotalSubmissions = useAnimatedNumber(stats.totalSubmissions, 1500)
   const animatedActiveCollections = useAnimatedNumber(stats.activeCollections, 1500)
@@ -69,7 +74,7 @@ export default function Dashboard() {
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">SlideLink at a Glance</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Real-time insights into the platforms activity and impact
+            Real-time insights into the platform&apos;s activity and impact
           </p>
         </div>
 
@@ -87,7 +92,7 @@ export default function Dashboard() {
         ) : error ? (
           <div className="text-center py-16 bg-red-50 border border-red-200 rounded-2xl">
             <p className="text-red-700 font-medium">{error}</p>
-            <p className="text-red-600 text-sm mt-2">Please ensure your backend is running and accessible.</p>
+            <p className="text-red-600 text-sm mt-2">Please ensure your backend is running and accessible at localhost:5000</p>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">

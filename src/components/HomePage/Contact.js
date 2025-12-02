@@ -3,31 +3,40 @@ import { ArrowRight, MessageCircle } from "lucide-react"
 
 export default function Contact() {
   return (
-    <section id="contact" className="py-24 lg:py-32 bg-white">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">Ready to Get Started?</h2>
-          <p className="text-xl text-gray-600 mb-12 leading-relaxed">
+    <section id="contact" className="py-32 relative">
+      {/* Gradient Orb */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[128px]" />
+      
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-5xl lg:text-6xl font-bold mb-6">
+            <span className="text-white">Ready to Get </span>
+            <span className="gradient-text">Started?</span>
+          </h2>
+          <p className="text-lg text-slate-400 mb-12 max-w-2xl mx-auto">
             Join thousands of students and instructors who have simplified their presentation workflow
           </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Link
               href="/create"
-              className="group relative overflow-hidden bg-gradient-to-r from-blue-600 via-purple-600 to-violet-600 text-white px-8 py-4 rounded-xl font-semibold hover:from-blue-700 hover:via-purple-700 hover:to-violet-700 transition-all duration-300 flex items-center space-x-2 text-lg shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="group btn-gradient px-10 py-5 rounded-2xl font-semibold hover:shadow-2xl hover:shadow-indigo-500/30 transition-all flex items-center justify-center gap-4 text-white min-w-[260px] text-lg"
             >
-              <span>Create Your First Collection</span>
-              <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-2" />
+              <span>Create Collection</span>
+              <ArrowRight className="w-6 h-6 transition-transform group-hover:translate-x-1" />
             </Link>
             <Link
               href="/contact"
-              className="group border-2 border-gray-200 text-gray-700 px-8 py-4 rounded-xl font-semibold hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 flex items-center space-x-2 text-lg"
+              className="group glass-effect border border-indigo-500/20 text-white px-10 py-5 rounded-2xl font-semibold hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all flex items-center justify-center gap-4 min-w-[260px] text-lg"
             >
-              <MessageCircle className="w-5 h-5" />
+              <MessageCircle className="w-6 h-6" />
               <span>Contact Support</span>
             </Link>
           </div>
         </div>
       </div>
+
+      {/* Decorative Line */}
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
     </section>
   )
 }

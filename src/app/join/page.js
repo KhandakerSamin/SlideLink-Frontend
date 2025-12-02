@@ -42,37 +42,37 @@ export default function JoinCollectionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-md mx-auto px-6 py-12">
+    <div className="min-h-screen pt-24 pb-16 flex items-start justify-center" style={{background: '#0a0f1e'}}>
+      <div className="w-full max-w-md px-6">
         <div className="mb-8">
           <Link
             href="/"
-            className="inline-flex items-center text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200"
+            className="inline-flex items-center gap-2 text-slate-300 hover:text-white font-medium transition-colors"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Home
+            <ArrowLeft className="w-4 h-4" />
+            <span>Back to Home</span>
           </Link>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-8 text-center">
-            <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-              <Users className="w-8 h-8" />
+        <div className="glass-effect rounded-2xl border border-indigo-500/10 overflow-hidden">
+          <div className="px-8 pt-8 pb-6 border-b border-indigo-500/10 text-center">
+            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mx-auto mb-4">
+              <Users className="w-7 h-7 text-white" />
             </div>
-            <h1 className="text-2xl font-bold mb-3">Join a Collection</h1>
-            <p className="text-blue-100 leading-relaxed">Enter collection details to get access.</p>
+            <h1 className="text-2xl font-semibold text-white mb-2">Join a Collection</h1>
+            <p className="text-sm text-slate-400">Enter collection details to get access</p>
           </div>
 
           <div className="p-8">
             {error && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
-                <p className="text-red-700 font-medium">{error}</p>
+              <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl">
+                <p className="text-red-400 font-medium text-sm">{error}</p>
               </div>
             )}
             <form onSubmit={handleJoin} className="space-y-6">
               <div>
-                <label htmlFor="username" className="block text-sm font-semibold text-gray-900 mb-3">
-                  <Users className="w-4 h-4 inline mr-2" />
+                <label htmlFor="username" className="block text-sm font-medium text-slate-200 mb-2">
+                  <Users className="w-4 h-4 inline mr-1.5" />
                   Collection Username
                 </label>
                 <input
@@ -82,12 +82,12 @@ export default function JoinCollectionPage() {
                   value={usernameInput}
                   onChange={(e) => setUsernameInput(e.target.value)}
                   required
-                  className="w-full px-4 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 placeholder-gray-500 text-lg"
+                  className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                 />
               </div>
               <div>
-                <label htmlFor="password" className="block text-sm font-semibold text-gray-900 mb-3">
-                  <Lock className="w-4 h-4 inline mr-2" />
+                <label htmlFor="password" className="block text-sm font-medium text-slate-200 mb-2">
+                  <Lock className="w-4 h-4 inline mr-1.5" />
                   Collection Password
                 </label>
                 <input
@@ -97,13 +97,13 @@ export default function JoinCollectionPage() {
                   value={passwordInput}
                   onChange={(e) => setPasswordInput(e.target.value)}
                   required
-                  className="w-full px-4 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 placeholder-gray-500 text-lg"
+                  className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                 />
               </div>
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-blue-600 text-white py-4 px-6 rounded-xl font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 text-lg flex items-center justify-center"
+                className="w-full btn-gradient text-white py-3.5 px-6 rounded-xl font-semibold disabled:opacity-60 disabled:cursor-not-allowed transition-all text-base shadow-md hover:shadow-indigo-500/30 flex items-center justify-center"
               >
                 {isLoading ? (
                   <>

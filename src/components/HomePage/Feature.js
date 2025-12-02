@@ -25,30 +25,41 @@ export default function Features() {
   ]
 
   return (
-    <section id="features" className="py-24 lg:py-32 bg-white">
+    <section id="features" className="py-32 relative">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        {/* Section Header */}
         <div className="text-center mb-20">
-          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">Why Choose SlideLink?</h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Built specifically for academic environments with simplicity and efficiency in mind
+          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
+            <span className="text-white">Why Choose </span>
+            <span className="gradient-text">SlideLink</span>
+          </h2>
+          <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+            Built for academic environments with simplicity at its core
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
+        {/* Features Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((feature, index) => {
             const IconComponent = feature.icon
             return (
-              <div key={index} className="text-center group">
-                <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-blue-100 transition-colors duration-200">
-                  <IconComponent className="w-8 h-8 text-blue-600" />
+              <div 
+                key={index} 
+                className="glass-effect rounded-2xl p-8 border border-indigo-500/10 card-hover hover:border-indigo-500/30 text-center flex flex-col items-center justify-center min-h-[260px]"
+              >
+                <div className="w-16 h-16 bg-gradient-to-br from-indigo-500/20 to-purple-600/20 rounded-xl flex items-center justify-center mb-6">
+                  <IconComponent className="w-8 h-8 text-indigo-400" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">{feature.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+                <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
+                <p className="text-slate-400 text-base leading-relaxed max-w-xs mx-auto">{feature.description}</p>
               </div>
             )
           })}
         </div>
       </div>
+
+      {/* Decorative Line */}
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
     </section>
   )
 }

@@ -50,28 +50,28 @@ const semesters = ["Spring 2025", "Summer 2025", "Fall 2025"]
 
 export default function CreateForm({ formData, setFormData, onSubmit, error, isLoading }) {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-2xl mx-auto px-6 py-8">
-        <div className="mb-8">
+    <div className="min-h-screen pt-24 pb-16 flex items-start justify-center" style={{background: '#0a0f1e'}}>
+      <div className="w-full max-w-3xl px-6">
+        <div className="mb-8 flex items-center justify-between">
           <Link
             href="/"
-            className="inline-flex items-center text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200"
+            className="inline-flex items-center gap-2 text-slate-300 hover:text-white font-medium transition-colors"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Home
+            <ArrowLeft className="w-4 h-4" />
+            <span>Back to Home</span>
           </Link>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-8">
-            <div className="flex items-center mb-4">
-              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mr-4">
-                <BookOpen className="w-6 h-6" />
+        <div className="glass-effect rounded-2xl border border-indigo-500/10 overflow-hidden">
+          <div className="px-8 pt-8 pb-6 border-b border-indigo-500/10">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                <BookOpen className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold">Create Slide Collection</h1>
-                <p className="text-blue-100 mt-1">
-                  Set up a new collection for your class to gather presentation slides
+                <h1 className="text-2xl md:text-3xl font-semibold text-white">Create Slide Collection</h1>
+                <p className="text-sm text-slate-400 mt-1">
+                  Minimal one-page setup to collect all class presentations in one secure place.
                 </p>
               </div>
             </div>
@@ -88,7 +88,7 @@ export default function CreateForm({ formData, setFormData, onSubmit, error, isL
               {/* Section and Course Code Row */}
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="section" className="block text-sm font-semibold text-gray-900 mb-2">
+                  <label htmlFor="section" className="block text-sm font-medium text-slate-200 mb-2">
                     Section *
                   </label>
                   <input
@@ -97,11 +97,11 @@ export default function CreateForm({ formData, setFormData, onSubmit, error, isL
                     value={formData.section}
                     onChange={(e) => setFormData({ ...formData, section: e.target.value })}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 placeholder-gray-500"
+                    className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                   />
                 </div>
                 <div>
-                  <label htmlFor="courseCode" className="block text-sm font-semibold text-gray-900 mb-2">
+                  <label htmlFor="courseCode" className="block text-sm font-medium text-slate-200 mb-2">
                     Course Code *
                   </label>
                   <input
@@ -110,14 +110,14 @@ export default function CreateForm({ formData, setFormData, onSubmit, error, isL
                     value={formData.courseCode}
                     onChange={(e) => setFormData({ ...formData, courseCode: e.target.value })}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 placeholder-gray-500"
+                    className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                   />
                 </div>
               </div>
 
               {/* Semester */}
               <div>
-                <label htmlFor="semester" className="block text-sm font-semibold text-gray-900 mb-2">
+                <label htmlFor="semester" className="block text-sm font-medium text-slate-200 mb-2">
                   Semester *
                 </label>
                 <select
@@ -125,7 +125,7 @@ export default function CreateForm({ formData, setFormData, onSubmit, error, isL
                   value={formData.semester}
                   onChange={(e) => setFormData({ ...formData, semester: e.target.value })}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 bg-white"
+                  className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                 >
                   {semesters.map((semester) => (
                     <option key={semester} value={semester}>
@@ -137,7 +137,7 @@ export default function CreateForm({ formData, setFormData, onSubmit, error, isL
 
               {/* Faculty */}
               <div>
-                <label htmlFor="faculty" className="block text-sm font-semibold text-gray-900 mb-2">
+                <label htmlFor="faculty" className="block text-sm font-medium text-slate-200 mb-2">
                   Faculty *
                 </label>
                 <select
@@ -147,7 +147,7 @@ export default function CreateForm({ formData, setFormData, onSubmit, error, isL
                     setFormData({ ...formData, faculty: e.target.value, department: "" })
                   }}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 bg-white"
+                  className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                 >
                   <option value="">Select faculty</option>
                   {Object.keys(faculties).map((faculty) => (
@@ -160,7 +160,7 @@ export default function CreateForm({ formData, setFormData, onSubmit, error, isL
 
               {/* Department */}
               <div>
-                <label htmlFor="department" className="block text-sm font-semibold text-gray-900 mb-2">
+                <label htmlFor="department" className="block text-sm font-medium text-slate-200 mb-2">
                   Department *
                 </label>
                 <select
@@ -169,7 +169,7 @@ export default function CreateForm({ formData, setFormData, onSubmit, error, isL
                   onChange={(e) => setFormData({ ...formData, department: e.target.value })}
                   disabled={!formData.faculty}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 bg-white disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
+                  className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   <option value="">{formData.faculty ? "Select department" : "Select faculty first"}</option>
                   {formData.faculty &&
@@ -184,7 +184,7 @@ export default function CreateForm({ formData, setFormData, onSubmit, error, isL
               {/* Team Count and Password Row */}
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="teamCount" className="block text-sm font-semibold text-gray-900 mb-2">
+                  <label htmlFor="teamCount" className="block text-sm font-medium text-slate-200 mb-2">
                     <Users className="w-4 h-4 inline mr-1" />
                     Number of Teams *
                   </label>
@@ -197,11 +197,11 @@ export default function CreateForm({ formData, setFormData, onSubmit, error, isL
                     value={formData.teamCount}
                     onChange={(e) => setFormData({ ...formData, teamCount: e.target.value })}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 placeholder-gray-500"
+                    className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                   />
                 </div>
                 <div>
-                  <label htmlFor="password" className="block text-sm font-semibold text-gray-900 mb-2">
+                  <label htmlFor="password" className="block text-sm font-medium text-slate-200 mb-2">
                     <Lock className="w-4 h-4 inline mr-1" />
                     Collection Password *
                   </label>
@@ -214,14 +214,14 @@ export default function CreateForm({ formData, setFormData, onSubmit, error, isL
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 placeholder-gray-500"
+                    className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                   />
                 </div>
               </div>
 
               {/* Creator Email - OPTIONAL */}
               <div>
-                <label htmlFor="creatorEmail" className="block text-sm font-semibold text-gray-900 mb-2">
+                <label htmlFor="creatorEmail" className="block text-sm font-medium text-slate-200 mb-2">
                   <Mail className="w-4 h-4 inline mr-1" />
                   Creator Email <span className="text-gray-500 font-normal">(Optional)</span>
                 </label>
@@ -231,15 +231,15 @@ export default function CreateForm({ formData, setFormData, onSubmit, error, isL
                   placeholder="For password recovery and notifications (optional)"
                   value={formData.creatorEmail}
                   onChange={(e) => setFormData({ ...formData, creatorEmail: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 placeholder-gray-500"
+                  className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                 />
-                <p className="text-sm text-gray-600 mt-1">Leave empty if you do not want email notifications</p>
+                <p className="text-xs text-slate-500 mt-1">Leave empty if you do not want email notifications</p>
               </div>
 
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-blue-600 text-white py-4 px-6 rounded-xl font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 text-lg"
+                className="w-full btn-gradient text-white py-3.5 px-6 rounded-xl font-semibold disabled:opacity-60 disabled:cursor-not-allowed transition-all text-base shadow-md hover:shadow-indigo-500/30"
               >
                 {isLoading ? "Creating Collection..." : "Create Slide Collection"}
               </button>

@@ -137,7 +137,11 @@ export default function CollectionPage() {
               {activeTab === "submit" ? (
                 <SubmitForm username={username} onSubmissionSuccess={loadSubmissions} onNotification={showNotification} />
               ) : (
-                <SubmissionsList submissions={submissions} />
+                <SubmissionsList 
+                  submissions={submissions} 
+                  collectionUsername={username}
+                  onSubmissionsChange={loadSubmissions}
+                />
               )}
             </div>
           </>

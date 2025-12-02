@@ -13,7 +13,7 @@ import {
   AlertCircle,
 } from "lucide-react"
 
-export default function SubmissionsList({ submissions: initialSubmissions, collectionUsername }) {
+export default function SubmissionsList({ submissions: initialSubmissions, collectionUsername, onSubmissionsChange }) {
   const [submissions, setSubmissions] = useState(initialSubmissions || [])
   const [searchTerm, setSearchTerm] = useState("")
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
@@ -90,6 +90,10 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
       refreshSubmissions(foundUsername)
     }
   }, [collectionUsername, initialSubmissions])
+
+  useEffect(() => {
+    setSubmissions(initialSubmissions || [])
+  }, [initialSubmissions])
 
   const showSuccess = (title, message) => {
     setModalTitle(title)
@@ -188,7 +192,11 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
       if (res.ok) {
         setIsDeleteModalOpen(false)
         setDeleteId(null)
-        await refreshSubmissions(currentUsername)
+        if (onSubmissionsChange) {
+          await onSubmissionsChange()
+        } else {
+          await refreshSubmissions(currentUsername)
+        }
         showSuccess("Success!", "Submission has been deleted successfully.")
       } else {
         const errorData = await res.json().catch(() => ({ error: "Unable to delete submission" }))
@@ -265,7 +273,11 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
       if (res.ok) {
         setIsEditModalOpen(false)
         setEditData({ _id: "", teamName: "", teamSerial: "", slideLink: "" })
-        await refreshSubmissions(currentUsername)
+        if (onSubmissionsChange) {
+          await onSubmissionsChange()
+        } else {
+          await refreshSubmissions(currentUsername)
+        }
         showSuccess("Success!", "Submission has been updated successfully.")
       } else {
         const errorData = await res.json().catch(() => ({ error: "Unable to update submission" }))

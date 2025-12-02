@@ -18,8 +18,8 @@ export default function Dashboard() {
       setIsLoading(true)
       setError(null)
       try {
-        // Use the proxy route instead of direct backend URL
-        const response = await fetch('/api/dashboard-stats', {
+        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"
+        const response = await fetch(`${backendUrl}/api/dashboard-stats`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -53,64 +53,71 @@ export default function Dashboard() {
       title: "Total Collections",
       value: animatedTotalCollections,
       description: "Collections created to date",
+      gradient: "from-purple-500 to-pink-500"
     },
     {
       icon: FileText,
       title: "Total Submissions",
       value: animatedTotalSubmissions,
       description: "Slides submitted by students",
+      gradient: "from-cyan-500 to-blue-500"
     },
     {
       icon: Clock,
       title: "Active Collections",
       value: animatedActiveCollections,
       description: "Currently live collections",
+      gradient: "from-green-500 to-emerald-500"
     },
   ]
 
   return (
-    <section className="py-24 lg:py-32 bg-blue-50">
+    <section className="py-32 relative">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">SlideLink at a Glance</h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Real-time insights into the platform&apos;s activity and impact
+        {/* Section Header */}
+        <div className="text-center mb-20">
+          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
+            <span className="text-white">Platform </span>
+            <span className="gradient-text">Statistics</span>
+          </h2>
+          <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+            Real-time insights into activity and growth
           </p>
         </div>
 
         {isLoading ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-10">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 animate-pulse">
-                <div className="w-16 h-16 bg-gray-200 rounded-2xl mx-auto mb-6"></div>
-                <div className="h-10 w-3/4 bg-gray-200 rounded mx-auto mb-3"></div>
-                <div className="h-6 w-1/2 bg-gray-200 rounded mx-auto mb-2"></div>
-                <div className="h-4 w-2/3 bg-gray-200 rounded mx-auto"></div>
+              <div key={i} className="glass-effect rounded-2xl p-8 border border-indigo-500/10 animate-pulse">
+                <div className="w-14 h-14 bg-slate-700/50 rounded-xl mb-6"></div>
+                <div className="h-12 bg-slate-700/50 rounded mb-4"></div>
+                <div className="h-5 bg-slate-700/50 rounded mb-2"></div>
+                <div className="h-4 bg-slate-700/50 rounded w-2/3"></div>
               </div>
             ))}
           </div>
         ) : error ? (
-          <div className="text-center py-16 bg-red-50 border border-red-200 rounded-2xl">
-            <p className="text-red-700 font-medium">{error}</p>
-            <p className="text-red-600 text-sm mt-2">Please ensure your backend is running and accessible at localhost:5000</p>
+          <div className="text-center py-16 glass-effect border border-red-500/20 rounded-2xl">
+            <p className="text-red-400 font-medium mb-2">{error}</p>
+            <p className="text-red-300/70 text-sm">Please ensure your backend is running</p>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-8">
             {statItems.map((item, index) => {
               const IconComponent = item.icon
               return (
                 <div
                   key={index}
-                  className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 flex flex-col items-center text-center transform hover:scale-105 transition-transform duration-300 ease-out"
+                  className="group glass-effect rounded-2xl p-10 border border-indigo-500/10 card-hover hover:border-indigo-500/30 flex flex-col items-center justify-center min-h-[260px]"
                 >
-                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6 shadow-inner">
-                    <IconComponent className="w-8 h-8 text-blue-600" />
+                  <div className={`w-16 h-16 bg-gradient-to-br ${item.gradient} rounded-xl flex items-center justify-center mb-7 shadow-lg`}>
+                    <IconComponent className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="text-5xl font-extrabold text-gray-900 mb-3 tabular-nums">
+                  <h3 className="text-5xl font-bold text-white mb-3 tabular-nums">
                     {item.value.toLocaleString()}
                   </h3>
-                  <p className="text-xl font-semibold text-gray-700 mb-2">{item.title}</p>
-                  <p className="text-gray-500 leading-relaxed">{item.description}</p>
+                  <p className="text-xl font-semibold text-slate-300 mb-2">{item.title}</p>
+                  <p className="text-slate-400 text-base leading-relaxed max-w-xs mx-auto">{item.description}</p>
                 </div>
               )
             })}

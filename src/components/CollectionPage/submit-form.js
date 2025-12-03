@@ -48,30 +48,30 @@ export default function SubmitForm({ username, onSubmissionSuccess }) {
   }
 
   return (
-    <div className="bg-white rounded-b-2xl shadow-lg border border-gray-100 border-t-0 overflow-hidden">
-      <div className="bg-gradient-to-r from-blue-500 to-violet-500 text-white p-8 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
-        <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
-        <div className="relative z-10 flex items-center mb-4">
-          <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center mr-4 backdrop-blur-sm">
-            <Upload className="w-7 h-7" />
+    <div className="glass-effect rounded-2xl border border-indigo-500/10 overflow-hidden bg-slate-900/40 backdrop-blur-sm">
+      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 text-white p-6 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-16 translate-x-16"></div>
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
+        <div className="relative z-10 flex items-center">
+          <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mr-4 backdrop-blur-sm">
+            <Upload className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold flex items-center">
-              Submit Your Teams Slides
-              <Sparkles className="w-5 h-5 ml-2 text-yellow-300" />
+            <h2 className="text-xl font-bold flex items-center">
+              Submit Your Slides
+              <Sparkles className="w-4 h-4 ml-2 text-yellow-300" />
             </h2>
-            <p className="text-blue-100 mt-1">Upload your presentation slides and share the link here</p>
+            <p className="text-indigo-100 text-sm mt-0.5">Share your presentation link</p>
           </div>
         </div>
       </div>
 
       {/* Form */}
-      <div className="p-8">
-        <form onSubmit={handleSubmission} className="space-y-6">
+      <div className="p-6">
+        <form onSubmit={handleSubmission} className="space-y-5">
           {/* Team Name Field */}
           <div>
-            <label htmlFor="teamName" className="block text-sm font-semibold text-gray-800 mb-3">
+            <label htmlFor="teamName" className="block text-sm font-semibold text-slate-200 mb-2">
               Team Name *
             </label>
             <input
@@ -81,13 +81,13 @@ export default function SubmitForm({ username, onSubmissionSuccess }) {
               value={submissionData.teamName}
               onChange={(e) => setSubmissionData({ ...submissionData, teamName: e.target.value })}
               required
-              className="w-full text-gray-800 placeholder-gray-500 px-4 py-4 border-2 border-gray-200 bg-gray-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-300"
+              className="w-full text-slate-100 placeholder-slate-500 px-4 py-3 border border-indigo-500/20 bg-slate-900/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-indigo-500/40"
             />
           </div>
 
           {/* Team Serial Field */}
           <div>
-            <label htmlFor="teamSerial" className="block text-sm font-semibold text-gray-800 mb-3">
+            <label htmlFor="teamSerial" className="block text-sm font-semibold text-slate-200 mb-2">
               Team Serial *
             </label>
             <input
@@ -97,13 +97,13 @@ export default function SubmitForm({ username, onSubmissionSuccess }) {
               value={submissionData.teamSerial}
               onChange={(e) => setSubmissionData({ ...submissionData, teamSerial: e.target.value })}
               required
-              className="w-full text-gray-800 placeholder-gray-500 px-4 py-4 border-2 border-gray-200 bg-gray-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-300"
+              className="w-full text-slate-100 placeholder-slate-500 px-4 py-3 border border-indigo-500/20 bg-slate-900/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-indigo-500/40"
             />
           </div>
 
           {/* Slide Link Field */}
           <div>
-            <label htmlFor="slideLink" className="block text-sm font-semibold text-gray-800 mb-3">
+            <label htmlFor="slideLink" className="block text-sm font-semibold text-slate-200 mb-2">
               Slide Link *
             </label>
             <input
@@ -113,11 +113,11 @@ export default function SubmitForm({ username, onSubmissionSuccess }) {
               value={submissionData.slideLink}
               onChange={(e) => setSubmissionData({ ...submissionData, slideLink: e.target.value })}
               required
-              className="w-full text-gray-800 placeholder-gray-500 px-4 py-4 border-2 border-gray-200 bg-gray-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-300"
+              className="w-full text-slate-100 placeholder-slate-500 px-4 py-3 border border-indigo-500/20 bg-slate-900/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-indigo-500/40"
             />
-            <div className="flex items-start mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
-              <AlertCircle className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0 text-blue-600" />
-              <p className="text-sm text-blue-800">
+            <div className="flex items-start mt-3 p-3 bg-indigo-500/10 rounded-lg border border-indigo-500/20">
+              <AlertCircle className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0 text-indigo-400" />
+              <p className="text-sm text-slate-300">
                 Make sure your slide link is publicly accessible or shared with viewing permissions
               </p>
             </div>
@@ -125,7 +125,7 @@ export default function SubmitForm({ username, onSubmissionSuccess }) {
 
           {/* Leader Email Field */}
           <div>
-            <label htmlFor="leaderEmail" className="block text-sm font-semibold text-gray-800 mb-3">
+            <label htmlFor="leaderEmail" className="block text-sm font-semibold text-slate-200 mb-2">
               Team Leader Email (Optional)
             </label>
             <input
@@ -134,14 +134,14 @@ export default function SubmitForm({ username, onSubmissionSuccess }) {
               placeholder="leader@example.com"
               value={submissionData.leaderEmail}
               onChange={(e) => setSubmissionData({ ...submissionData, leaderEmail: e.target.value })}
-              className="w-full text-gray-800 placeholder-gray-500 px-4 py-4 border-2 border-gray-200 bg-gray-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-300"
+              className="w-full text-slate-100 placeholder-slate-500 px-4 py-3 border border-indigo-500/20 bg-slate-900/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-indigo-500/40"
             />
           </div>
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-gradient-to-r from-blue-500 to-violet-500 text-white py-4 px-6 rounded-xl font-semibold hover:from-blue-600 hover:to-violet-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+            className="w-full btn-gradient text-white py-3.5 px-6 rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
           >
             {isSubmitting ? (
               <div className="flex items-center justify-center">

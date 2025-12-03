@@ -17,6 +17,8 @@ export default function CreatePage() {
     creatorEmail: "",
   })
 
+  
+
   const [createdCollection, setCreatedCollection] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")

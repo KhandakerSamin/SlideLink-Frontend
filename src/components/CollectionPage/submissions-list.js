@@ -89,6 +89,7 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
     if (foundUsername && (!initialSubmissions || initialSubmissions.length === 0)) {
       refreshSubmissions(foundUsername)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [collectionUsername, initialSubmissions])
 
   useEffect(() => {
@@ -291,21 +292,21 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
   }
 
   return (
-    <div className="bg-white rounded-b-2xl shadow-sm border border-gray-100 border-t-0">
+    <div className="glass-effect rounded-2xl border border-indigo-500/10 overflow-hidden bg-slate-900/40 backdrop-blur-sm">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-500 to-violet-500 text-white p-8 py-10">
+      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 text-white p-6 py-8">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
           <div className="mb-6 lg:mb-0">
-            <h2 className="text-2xl font-bold mb-2">All Submissions</h2>
-            <p className="text-purple-100">View all submitted presentation slides</p>
+            <h2 className="text-xl font-bold mb-1">All Submissions</h2>
+            <p className="text-indigo-100 text-sm">View submitted presentation slides</p>
           </div>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-purple-300" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-indigo-300" />
             <input
               placeholder="Search teams..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full lg:w-64 bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder:text-purple-200 px-10 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-white/30"
+              className="w-full lg:w-64 bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder:text-indigo-200 px-10 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-white/30"
             />
           </div>
         </div>
@@ -324,62 +325,62 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
       )}
 
       {/* Content */}
-      <div className="p-8">
+      <div className="p-6">
         {filteredSubmissions.length === 0 ? (
           <div className="text-center py-16">
-            <Users className="w-16 h-16 mx-auto mb-6 text-gray-300" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            <Users className="w-16 h-16 mx-auto mb-6 text-slate-600" />
+            <h3 className="text-xl font-semibold text-slate-200 mb-2">
               {submissions.length === 0 ? "No submissions yet" : "No teams match your search"}
             </h3>
-            <p className="text-gray-600">
+            <p className="text-slate-400">
               {submissions.length === 0
                 ? "Submissions will appear here once teams start uploading their slides"
                 : "Try adjusting your search terms"}
             </p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {filteredSubmissions.map((submission) => (
               <div
                 key={submission._id}
-                className="flex flex-col lg:flex-row lg:items-center lg:justify-between p-6 border border-gray-100 rounded-2xl hover:shadow-md transition-all duration-200 bg-gradient-to-r from-gray-50 to-white"
+                className="flex flex-col lg:flex-row lg:items-center lg:justify-between p-5 border border-indigo-500/20 rounded-xl hover:border-indigo-500/40 transition-all duration-200 bg-slate-900/40 backdrop-blur-sm hover:bg-slate-900/60"
               >
                 <div className="flex-1 mb-4 lg:mb-0">
-                  <div className="flex items-center text-sm font-bold text-purple-600 mb-2">
+                  <div className="flex items-center text-sm font-bold text-indigo-400 mb-2">
                     <Hash className="w-4 h-4 mr-1" />
                     {submission.teamSerial}
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{submission.teamName}</h3>
-                  <div className="flex items-center text-sm text-gray-500">
+                  <h3 className="text-lg font-semibold text-slate-100 mb-2">{submission.teamName}</h3>
+                  <div className="flex items-center text-sm text-slate-400">
                     <Clock className="w-4 h-4 mr-2" />
                     Submitted {new Date(submission.submittedAt).toLocaleString()}
                   </div>
                 </div>
 
                 {/* Actions */}
-                <div className="flex flex-col lg:flex-row lg:items-center gap-3">
+                <div className="flex flex-col lg:flex-row lg:items-center gap-2">
                   <a
                     href={submission.slideLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors duration-200"
+                    className="inline-flex items-center justify-center btn-gradient text-white px-5 py-2.5 rounded-lg font-semibold transition-all duration-200 hover:scale-105"
                   >
                     View Slides
-                    <ExternalLink className="w-4 h-4 ml-3" />
+                    <ExternalLink className="w-4 h-4 ml-2" />
                   </a>
 
                   {/* Desktop buttons */}
                   <button
                     onClick={() => openEditModal(submission)}
                     disabled={isLoading}
-                    className="hidden md:inline-flex items-center justify-center bg-yellow-500 text-white px-4 py-3 rounded-xl font-semibold hover:bg-yellow-600 disabled:opacity-50 transition-colors duration-200"
+                    className="hidden md:inline-flex items-center justify-center bg-amber-500 text-white px-3 py-2.5 rounded-lg font-semibold hover:bg-amber-600 disabled:opacity-50 transition-colors duration-200"
                   >
                     <Edit className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleDeleteClick(submission._id)}
                     disabled={isLoading}
-                    className="hidden md:inline-flex items-center justify-center bg-red-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-red-700 disabled:opacity-50 transition-colors duration-200"
+                    className="hidden md:inline-flex items-center justify-center bg-red-500 text-white px-3 py-2.5 rounded-lg font-semibold hover:bg-red-600 disabled:opacity-50 transition-colors duration-200"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -389,7 +390,7 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
                     <button
                       onClick={() => openEditModal(submission)}
                       disabled={isLoading}
-                      className="flex-1 inline-flex items-center justify-center bg-yellow-500 text-white px-4 py-3 rounded-xl font-semibold hover:bg-yellow-600 disabled:opacity-50 transition-colors duration-200"
+                      className="flex-1 inline-flex items-center justify-center bg-amber-500 text-white px-4 py-2.5 rounded-lg font-semibold hover:bg-amber-600 disabled:opacity-50 transition-colors duration-200"
                     >
                       <Edit className="w-4 h-4 mr-1" />
                       Update
@@ -397,7 +398,7 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
                     <button
                       onClick={() => handleDeleteClick(submission._id)}
                       disabled={isLoading}
-                      className="flex-1 inline-flex items-center justify-center bg-red-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-red-700 disabled:opacity-50 transition-colors duration-200"
+                      className="flex-1 inline-flex items-center justify-center bg-red-500 text-white px-4 py-2.5 rounded-lg font-semibold hover:bg-red-600 disabled:opacity-50 transition-colors duration-200"
                     >
                       <Trash2 className="w-4 h-4 mr-1" />
                       Delete

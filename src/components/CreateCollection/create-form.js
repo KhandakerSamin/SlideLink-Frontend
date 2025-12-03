@@ -1,7 +1,6 @@
-"use client"
-
-import Link from "next/link"
-import { ArrowLeft, Users, Lock, Mail, BookOpen } from "lucide-react"
+import React, { useState } from 'react'
+import Link from 'next/link'
+import { ArrowLeft, Users, Lock, Mail, BookOpen } from 'lucide-react'
 
 const faculties = {
   "Faculty of Science and Information Technology (FSIT)": [
@@ -48,56 +47,97 @@ const faculties = {
 
 const semesters = ["Spring 2025", "Summer 2025", "Fall 2025"]
 
-export default function CreateForm({ formData, setFormData, onSubmit, error, isLoading }) {
-  return (
-    <div className="min-h-screen pt-24 pb-16 flex items-start justify-center" style={{background: '#0a0f1e'}}>
-      <div className="w-full max-w-3xl px-6">
-        <div className="mb-8 flex items-center justify-between">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-slate-300 hover:text-white font-medium transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back to Home</span>
-          </Link>
-        </div>
+export default function CreateForm() {
+  const [formData, setFormData] = useState({
+    section: '',
+    courseCode: '',
+    semester: 'Spring 2025',
+    faculty: '',
+    department: '',
+    teamCount: '',
+    password: '',
+    creatorEmail: ''
+  })
+  const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
-        <div className="glass-effect rounded-2xl border border-indigo-500/10 overflow-hidden">
-          <div className="px-8 pt-8 pb-6 border-b border-indigo-500/10">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setError('')
+    
+    setTimeout(() => {
+      setIsLoading(false)
+      alert('Collection created successfully!')
+    }, 1500)
+  }
+
+  return (
+    <div className="min-h-screen relative">
+      {/* Background Grid */}
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          background: "#020617",
+          backgroundImage: `
+            linear-gradient(to right, rgba(71,85,105,0.3) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(71,85,105,0.3) 1px, transparent 1px),
+            radial-gradient(circle at 50% 50%, rgba(139,92,246,0.15) 0%, transparent 70%)
+          `,
+          backgroundSize: "32px 32px, 32px 32px, 100% 100%",
+        }}
+      />
+
+
+      {/* Main Content */}
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative z-10">
+          {/* Title Section */}
+          <div className="mb-8 flex justify-between items-start">
+            <div className="flex items-start gap-4 mb-2">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-lg">
                 <BookOpen className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl md:text-3xl font-semibold text-white">Create Slide Collection</h1>
-                <p className="text-sm text-slate-400 mt-1">
-                  Minimal one-page setup to collect all class presentations in one secure place.
+                <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">Create a Slide Collection</h1>
+                <p className="text-base text-slate-300 mt-1">
+                  Set up your class presentation collection in one secure place.
                 </p>
               </div>
             </div>
+            <div>
+              {/* Go back to Home button */}
+              <Link
+                href="/"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-900/70 border border-indigo-500/30 text-indigo-300 hover:bg-indigo-600 hover:text-white transition font-medium shadow hover:shadow-indigo-500/20"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Home
+              </Link>
+            </div>
           </div>
 
+          {/* Form Card */}
+        <div className="glass-effect rounded-2xl border border-indigo-500/20 shadow-xl">
           <div className="p-8">
             {error && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
-                <p className="text-red-700 font-medium">{error}</p>
+              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-700 text-sm font-medium">{error}</p>
               </div>
             )}
 
-            <form onSubmit={onSubmit} className="space-y-6">
+            <div className="space-y-6">
               {/* Section and Course Code Row */}
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
                 <div>
                   <label htmlFor="section" className="block text-sm font-medium text-slate-200 mb-2">
                     Section *
                   </label>
                   <input
                     id="section"
-                    placeholder="e.g., 42-E, 65-A, 30-B"
+                    placeholder="e.g., 42-E, 65-A"
                     value={formData.section}
                     onChange={(e) => setFormData({ ...formData, section: e.target.value })}
-                    required
-                    className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                    className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   />
                 </div>
                 <div>
@@ -106,11 +146,10 @@ export default function CreateForm({ formData, setFormData, onSubmit, error, isL
                   </label>
                   <input
                     id="courseCode"
-                    placeholder="e.g., SE112, CSE101, EEE201"
+                    placeholder="e.g., SE112, CSE101"
                     value={formData.courseCode}
                     onChange={(e) => setFormData({ ...formData, courseCode: e.target.value })}
-                    required
-                    className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                    className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -124,8 +163,7 @@ export default function CreateForm({ formData, setFormData, onSubmit, error, isL
                   id="semester"
                   value={formData.semester}
                   onChange={(e) => setFormData({ ...formData, semester: e.target.value })}
-                  required
-                  className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 >
                   {semesters.map((semester) => (
                     <option key={semester} value={semester}>
@@ -146,8 +184,7 @@ export default function CreateForm({ formData, setFormData, onSubmit, error, isL
                   onChange={(e) => {
                     setFormData({ ...formData, faculty: e.target.value, department: "" })
                   }}
-                  required
-                  className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 >
                   <option value="">Select faculty</option>
                   {Object.keys(faculties).map((faculty) => (
@@ -168,8 +205,7 @@ export default function CreateForm({ formData, setFormData, onSubmit, error, isL
                   value={formData.department}
                   onChange={(e) => setFormData({ ...formData, department: e.target.value })}
                   disabled={!formData.faculty}
-                  required
-                  className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   <option value="">{formData.faculty ? "Select department" : "Select faculty first"}</option>
                   {formData.faculty &&
@@ -182,7 +218,7 @@ export default function CreateForm({ formData, setFormData, onSubmit, error, isL
               </div>
 
               {/* Team Count and Password Row */}
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
                 <div>
                   <label htmlFor="teamCount" className="block text-sm font-medium text-slate-200 mb-2">
                     <Users className="w-4 h-4 inline mr-1" />
@@ -196,8 +232,7 @@ export default function CreateForm({ formData, setFormData, onSubmit, error, isL
                     placeholder="e.g., 10"
                     value={formData.teamCount}
                     onChange={(e) => setFormData({ ...formData, teamCount: e.target.value })}
-                    required
-                    className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                    className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   />
                 </div>
                 <div>
@@ -213,8 +248,7 @@ export default function CreateForm({ formData, setFormData, onSubmit, error, isL
                     maxLength={12}
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    required
-                    className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                    className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -223,27 +257,27 @@ export default function CreateForm({ formData, setFormData, onSubmit, error, isL
               <div>
                 <label htmlFor="creatorEmail" className="block text-sm font-medium text-slate-200 mb-2">
                   <Mail className="w-4 h-4 inline mr-1" />
-                  Creator Email <span className="text-gray-500 font-normal">(Optional)</span>
+                  Creator Email <span className="text-slate-500 font-normal">(Optional)</span>
                 </label>
                 <input
                   id="creatorEmail"
                   type="email"
-                  placeholder="For password recovery and notifications (optional)"
+                  placeholder="For password recovery and notifications"
                   value={formData.creatorEmail}
                   onChange={(e) => setFormData({ ...formData, creatorEmail: e.target.value })}
-                  className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 />
-                <p className="text-xs text-slate-500 mt-1">Leave empty if you do not want email notifications</p>
+                <p className="text-xs text-slate-400 mt-1.5">Leave empty if you don&apos;t want email notifications</p>
               </div>
 
               <button
-                type="submit"
+                onClick={handleSubmit}
                 disabled={isLoading}
                 className="w-full btn-gradient text-white py-3.5 px-6 rounded-xl font-semibold disabled:opacity-60 disabled:cursor-not-allowed transition-all text-base shadow-md hover:shadow-indigo-500/30"
               >
                 {isLoading ? "Creating Collection..." : "Create Slide Collection"}
               </button>
-            </form>
+            </div>
           </div>
         </div>
       </div>

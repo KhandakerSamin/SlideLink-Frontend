@@ -37,6 +37,7 @@ export default function CollectionPage() {
     } else {
       setIsLoading(false)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username, password])
 
   const authenticateAndLoadData = async () => {
@@ -113,22 +114,33 @@ export default function CollectionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-violet-50">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
+    <div className="min-h-screen w-full dark-sphere-bg relative">
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          background: '#020617',
+          backgroundImage: `
+            linear-gradient(to right, rgba(71,85,105,0.25) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(71,85,105,0.25) 1px, transparent 1px),
+            radial-gradient(circle at 50% 40%, rgba(99,102,241,0.06) 0%, transparent 60%)
+          `,
+          backgroundSize: '32px 32px, 32px 32px, 100% 100%',
+        }}
+      />
+
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <CollectionHeader collectionData={collectionData} submissions={submissions} />
 
-        <div className="mt-8">
+        <div className="mt-6">
           <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} submissionsCount={submissions.length} />
 
-          {activeTab === "submit" ? (
-            <SubmitForm username={username} onSubmissionSuccess={loadSubmissions} />
-          ) : (
-            // ✅ FIXED: Pass the username as collectionUsername prop
-            <SubmissionsList 
-              submissions={submissions} 
-              collectionUsername={username}
-            />
-          )}
+          <div className="mt-4">
+            {activeTab === 'submit' ? (
+              <SubmitForm username={username} onSubmissionSuccess={loadSubmissions} />
+            ) : (
+              <SubmissionsList submissions={submissions} collectionUsername={username} onSubmissionsChange={loadSubmissions} />
+            )}
+          </div>
         </div>
       </div>
     </div>

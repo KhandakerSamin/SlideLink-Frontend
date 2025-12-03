@@ -4,31 +4,29 @@ import { Plus, Eye } from "lucide-react"
 
 export default function TabNavigation({ activeTab, setActiveTab, submissionsCount }) {
   return (
-    <div className="bg-white rounded-t-2xl shadow-lg border border-gray-100 border-b-0 overflow-hidden">
+    <div className="glass-effect rounded-t-2xl border border-indigo-500/10 overflow-hidden">
       <div className="grid grid-cols-2">
         <button
           onClick={() => setActiveTab("submit")}
-          className={`flex items-center justify-center py-5 px-6 font-semibold transition-all duration-300 rounded-tl-2xl relative ${
+          className={`flex items-center justify-center py-4 px-6 font-semibold transition-all duration-300 ${
             activeTab === "submit"
-              ? "bg-gradient-to-r from-blue-500 to-violet-500 text-white shadow-lg transform scale-105"
-              : "text-gray-600 hover:text-blue-600 hover:bg-blue-50"
+              ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg transform scale-102"
+              : "text-slate-200 hover:text-white hover:bg-slate-800/40"
           }`}
         >
-          <Plus className="w-5 h-5 mr-2" />
+          <Plus className="w-5 h-5 mr-2 text-current" />
           Submit Slides
-          {activeTab === "submit" && <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/30"></div>}
         </button>
         <button
           onClick={() => setActiveTab("view")}
-          className={`flex items-center justify-center py-5 px-6 font-semibold transition-all duration-300 rounded-tr-2xl relative ${
+          className={`flex items-center justify-center py-4 px-6 font-semibold transition-all duration-300 ${
             activeTab === "view"
-              ? "bg-gradient-to-r from-blue-500 to-violet-500 text-white shadow-lg transform scale-105"
-              : "text-gray-600 hover:text-blue-600 hover:bg-blue-50"
+              ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg transform scale-102"
+              : "text-slate-200 hover:text-white hover:bg-slate-800/40"
           }`}
         >
-          <Eye className="w-5 h-5 mr-2" />
+          <Eye className="w-5 h-5 mr-2 text-current" />
           View Submissions ({submissionsCount})
-          {activeTab === "view" && <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/30"></div>}
         </button>
       </div>
     </div>

@@ -166,8 +166,7 @@ export default function RecentCollections() {
         )}
       </div>
 
-      {/* Decorative Line */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
+      
     </section>
   )
 }

@@ -48,7 +48,7 @@ export default function SubmitForm({ username, onSubmissionSuccess }) {
   }
 
   return (
-    <div className="glass-effect rounded-2xl border border-indigo-500/10 overflow-hidden bg-slate-900/40 backdrop-blur-sm">
+    <div className="glass-effect rounded-b-2xl border border-indigo-500/10 overflow-hidden bg-slate-900/40 backdrop-blur-sm">
       <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 text-white p-6 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-16 translate-x-16"></div>
         <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
@@ -67,8 +67,8 @@ export default function SubmitForm({ username, onSubmissionSuccess }) {
       </div>
 
       {/* Form */}
-      <div className="p-6">
-        <form onSubmit={handleSubmission} className="space-y-5">
+      <div className="p-8 pt-8 pb-8">
+        <form onSubmit={handleSubmission} className="space-y-6">
           {/* Team Name Field */}
           <div>
             <label htmlFor="teamName" className="block text-sm font-semibold text-slate-200 mb-2">
@@ -138,11 +138,12 @@ export default function SubmitForm({ username, onSubmissionSuccess }) {
             />
           </div>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full btn-gradient text-white py-3.5 px-6 rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
-          >
+          <div className="pt-2">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full btn-gradient text-white py-4 px-6 rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+            >
             {isSubmitting ? (
               <div className="flex items-center justify-center">
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
@@ -151,7 +152,8 @@ export default function SubmitForm({ username, onSubmissionSuccess }) {
             ) : (
               "Submit Slide Link"
             )}
-          </button>
+            </button>
+          </div>
         </form>
       </div>
     </div>

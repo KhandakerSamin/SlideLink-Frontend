@@ -127,26 +127,30 @@ export default function CollectionPage() {
 
   // If authenticated, render the collection content
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
+    <div className="min-h-screen w-full relative">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {collectionData ? (
           <>
             <CollectionHeader collectionData={collectionData} submissions={submissions} />
             <div className="mt-8">
               <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} submissionsCount={submissions.length} />
-              {activeTab === "submit" ? (
-                <SubmitForm username={username} onSubmissionSuccess={loadSubmissions} onNotification={showNotification} />
-              ) : (
-                <SubmissionsList 
-                  submissions={submissions} 
-                  collectionUsername={username}
-                  onSubmissionsChange={loadSubmissions}
-                />
-              )}
+              <div className="mt-0">
+                {activeTab === "submit" ? (
+                  <SubmitForm username={username} onSubmissionSuccess={loadSubmissions} onNotification={showNotification} />
+                ) : (
+                  <SubmissionsList 
+                    submissions={submissions} 
+                    collectionUsername={username}
+                    onSubmissionsChange={loadSubmissions}
+                  />
+                )}
+              </div>
             </div>
           </>
         ) : (
-          <p className="text-center text-gray-600">Loading collection details...</p>
+          <div className="text-center glass-effect p-8 rounded-2xl border border-indigo-500/10">
+            <p className="text-slate-300">Loading collection details...</p>
+          </div>
         )}
       </div>
     </div>

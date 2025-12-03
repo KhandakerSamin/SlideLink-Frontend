@@ -8,19 +8,10 @@ export default function CollectionHeader({ collectionData, submissions }) {
 
   return (
     <>
-    {/* Background overlay */}
-      <div
-        className="absolute inset-0 z-0"
-        style={{
-          background: '#020617',
-          backgroundImage: `linear-gradient(to right, rgba(71,85,105,0.25) 1px, transparent 1px), linear-gradient(to bottom, rgba(71,85,105,0.25) 1px, transparent 1px)`,
-          backgroundSize: '36px 36px, 36px 36px',
-        }}
-      />
       <div className="mb-6">
         <Link
           href="/"
-          className="inline-flex items-center text-slate-300 hover:text-white font-medium transition-colors duration-200"
+          className="inline-flex items-center text-slate-300 hover:text-white font-medium transition-colors duration-200 hover:translate-x-[-4px] transform"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Home

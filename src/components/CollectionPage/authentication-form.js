@@ -5,18 +5,8 @@ import { ArrowLeft, Lock, Shield } from "lucide-react"
 
 export default function AuthenticationForm({ username, passwordInput, setPasswordInput, onAuthenticate }) {
   return (
-    <div className="min-h-screen relative dark-sphere-bg">
-      {/* Background overlay */}
-      <div
-        className="absolute inset-0 z-0"
-        style={{
-          background: '#020617',
-          backgroundImage: `linear-gradient(to right, rgba(71,85,105,0.25) 1px, transparent 1px), linear-gradient(to bottom, rgba(71,85,105,0.25) 1px, transparent 1px)`,
-          backgroundSize: '36px 36px, 36px 36px',
-        }}
-      />
-
-      <div className="max-w-md mx-auto px-6 py-20 relative z-10">
+    <div className="min-h-screen relative">
+      <div className="max-w-md mx-auto px-6 py-20">
         <div className="mb-8 text-center">
           <Link href="/" className="inline-flex items-center text-slate-300 hover:text-white font-medium transition-colors">
             <ArrowLeft className="w-4 h-4 mr-2" />

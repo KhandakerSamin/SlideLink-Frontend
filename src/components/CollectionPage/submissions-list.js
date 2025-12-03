@@ -292,7 +292,7 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
   }
 
   return (
-    <div className="glass-effect rounded-2xl border border-indigo-500/10 overflow-hidden bg-slate-900/40 backdrop-blur-sm">
+    <div className="glass-effect rounded-b-2xl border border-indigo-500/10 overflow-hidden bg-slate-900/40 backdrop-blur-sm">
       {/* Header */}
       <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 text-white p-6 py-8">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
@@ -314,11 +314,11 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
 
       {/* Loading Overlay */}
       {isLoading && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-xl shadow-lg">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="glass-effect p-6 rounded-xl border border-indigo-500/20">
             <div className="flex items-center space-x-3">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600"></div>
-              <p className="text-gray-900 font-medium">Processing...</p>
+              <div className="animate-spin rounded-full h-6 w-6 border-2 border-indigo-500/20 border-t-indigo-500"></div>
+              <p className="text-slate-200 font-medium">Processing...</p>
             </div>
           </div>
         </div>
@@ -413,32 +413,32 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
 
       {/* Delete Confirmation Modal */}
       {isDeleteModalOpen && (
-        <div className="fixed inset-0 backdrop-blur-sm bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-11/12 max-w-md shadow-lg">
-            <div className="flex items-center mb-4">
-              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
-                <Trash2 className="w-6 h-6 text-red-600" />
+        <div className="fixed inset-0 backdrop-blur-sm bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="glass-effect rounded-2xl p-8 w-11/12 max-w-md border border-indigo-500/20 shadow-2xl">
+            <div className="flex items-start mb-6">
+              <div className="w-14 h-14 bg-red-500/10 rounded-xl flex items-center justify-center mr-4 flex-shrink-0">
+                <Trash2 className="w-7 h-7 text-red-400" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-gray-900">Delete Submission</h3>
-                <p className="text-sm text-gray-500">This action cannot be undone</p>
+                <h3 className="text-xl font-bold text-slate-100 mb-1">Delete Submission</h3>
+                <p className="text-sm text-slate-400">This action cannot be undone</p>
               </div>
             </div>
-            <p className="mb-6 text-gray-700">
+            <p className="mb-8 text-slate-300 leading-relaxed">
               Are you sure you want to delete this submission? All data will be permanently removed.
             </p>
-            <div className="flex justify-end gap-4">
+            <div className="flex justify-end gap-3">
               <button
                 onClick={() => setIsDeleteModalOpen(false)}
                 disabled={isLoading}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 disabled:opacity-50 transition"
+                className="px-6 py-2.5 border border-slate-600 rounded-lg text-slate-200 hover:bg-slate-800/50 disabled:opacity-50 transition-all font-medium"
               >
                 Cancel
               </button>
               <button
                 onClick={confirmDelete}
                 disabled={isLoading}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition"
+                className="px-6 py-2.5 bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:opacity-50 transition-all font-medium"
               >
                 {isLoading ? "Deleting..." : "Delete"}
               </button>
@@ -449,57 +449,57 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
 
       {/* Edit Submission Modal */}
       {isEditModalOpen && (
-        <div className="fixed inset-0 backdrop-blur-sm bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-xl w-full max-w-lg shadow-lg">
+        <div className="fixed inset-0 backdrop-blur-sm bg-black/60 flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="glass-effect p-8 rounded-2xl w-full max-w-lg border border-indigo-500/20 shadow-2xl my-8">
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center">
-                <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center mr-3">
-                  <Edit className="w-5 h-5 text-yellow-600" />
+                <div className="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center mr-3">
+                  <Edit className="w-6 h-6 text-amber-400" />
                 </div>
-                <h3 className="text-xl text-gray-900 font-bold">Edit Submission</h3>
+                <h3 className="text-xl text-slate-100 font-bold">Edit Submission</h3>
               </div>
-              <button onClick={() => setIsEditModalOpen(false)} disabled={isLoading} className="disabled:opacity-50">
-                <X className="w-6 h-6 text-gray-500 hover:text-gray-700" />
+              <button onClick={() => setIsEditModalOpen(false)} disabled={isLoading} className="disabled:opacity-50 hover:bg-slate-800/50 p-2 rounded-lg transition-colors">
+                <X className="w-6 h-6 text-slate-400 hover:text-slate-200" />
               </button>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div>
-                <label className="block text-sm text-gray-900 font-medium mb-1">Team Name *</label>
+                <label className="block text-sm text-slate-200 font-semibold mb-2">Team Name *</label>
                 <input
                   type="text"
                   value={editData.teamName}
                   onChange={(e) => setEditData({ ...editData, teamName: e.target.value })}
-                  className="w-full border text-gray-900 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                  className="w-full border border-indigo-500/20 text-slate-100 rounded-xl px-4 py-3 bg-slate-900/60 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
                   disabled={isLoading}
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-900 font-medium mb-1">Team Serial *</label>
+                <label className="block text-sm text-slate-200 font-semibold mb-2">Team Serial *</label>
                 <input
                   type="text"
                   value={editData.teamSerial}
                   onChange={(e) => setEditData({ ...editData, teamSerial: e.target.value })}
-                  className="w-full border rounded-lg text-gray-900 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                  className="w-full border border-indigo-500/20 rounded-xl text-slate-100 px-4 py-3 bg-slate-900/60 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
                   disabled={isLoading}
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-900 font-medium mb-1">Slide Link *</label>
+                <label className="block text-sm text-slate-200 font-semibold mb-2">Slide Link *</label>
                 <input
                   type="url"
                   value={editData.slideLink}
                   onChange={(e) => setEditData({ ...editData, slideLink: e.target.value })}
-                  className="w-full border rounded-lg text-gray-900 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                  className="w-full border border-indigo-500/20 rounded-xl text-slate-100 px-4 py-3 bg-slate-900/60 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
                   disabled={isLoading}
                 />
               </div>
-              <div className="flex justify-end gap-3 mt-6">
+              <div className="flex justify-end gap-3 mt-8 pt-4 border-t border-indigo-500/10">
                 <button
                   type="button"
                   onClick={() => setIsEditModalOpen(false)}
                   disabled={isLoading}
-                  className="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition"
+                  className="px-6 py-2.5 text-slate-200 border border-slate-600 rounded-lg hover:bg-slate-800/50 disabled:opacity-50 transition-all font-medium"
                 >
                   Cancel
                 </button>
@@ -507,7 +507,7 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
                   type="button"
                   onClick={handleUpdateSubmit}
                   disabled={isLoading}
-                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 transition"
+                  className="px-6 py-2.5 btn-gradient text-white rounded-lg disabled:opacity-50 transition-all font-medium"
                 >
                   {isLoading ? "Saving..." : "Save Changes"}
                 </button>
@@ -519,17 +519,17 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
 
       {/* Success Modal */}
       {showSuccessModal && (
-        <div className="fixed inset-0 backdrop-blur-sm bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-11/12 max-w-md shadow-lg">
+        <div className="fixed inset-0 backdrop-blur-sm bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="glass-effect rounded-2xl p-8 w-11/12 max-w-md border border-indigo-500/20 shadow-2xl">
             <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle className="w-8 h-8 text-green-600" />
+              <div className="w-16 h-16 bg-green-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <CheckCircle className="w-10 h-10 text-green-400" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">{modalTitle}</h3>
-              <p className="text-gray-600 mb-6">{modalMessage}</p>
+              <h3 className="text-xl font-bold text-slate-100 mb-3">{modalTitle}</h3>
+              <p className="text-slate-300 mb-8 leading-relaxed">{modalMessage}</p>
               <button
                 onClick={() => setShowSuccessModal(false)}
-                className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+                className="px-8 py-3 bg-green-500 text-white rounded-xl hover:bg-green-600 transition-all font-semibold w-full"
               >
                 OK
               </button>
@@ -540,17 +540,17 @@ export default function SubmissionsList({ submissions: initialSubmissions, colle
 
       {/* Error Modal */}
       {showErrorModal && (
-        <div className="fixed inset-0 backdrop-blur-sm bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-11/12 max-w-md shadow-lg">
+        <div className="fixed inset-0 backdrop-blur-sm bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="glass-effect rounded-2xl p-8 w-11/12 max-w-md border border-indigo-500/20 shadow-2xl">
             <div className="text-center">
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <AlertCircle className="w-8 h-8 text-red-600" />
+              <div className="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <AlertCircle className="w-10 h-10 text-red-400" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">{modalTitle}</h3>
-              <p className="text-gray-600 mb-6">{modalMessage}</p>
+              <h3 className="text-xl font-bold text-slate-100 mb-3">{modalTitle}</h3>
+              <p className="text-slate-300 mb-8 leading-relaxed">{modalMessage}</p>
               <button
                 onClick={() => setShowErrorModal(false)}
-                className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                className="px-8 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-all font-semibold w-full"
               >
                 OK
               </button>

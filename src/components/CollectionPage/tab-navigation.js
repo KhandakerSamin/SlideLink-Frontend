@@ -4,7 +4,7 @@ import { Plus, Eye } from "lucide-react"
 
 export default function TabNavigation({ activeTab, setActiveTab, submissionsCount }) {
   return (
-    <div className="glass-effect rounded-t-2xl border border-indigo-500/10 overflow-hidden">
+    <div className="glass-effect rounded-t-2xl border border-indigo-500/10 overflow-hidden bg-slate-900/40 backdrop-blur-sm">
       <div className="grid grid-cols-2">
         <button
           onClick={() => setActiveTab("submit")}

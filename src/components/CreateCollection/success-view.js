@@ -33,8 +33,8 @@ export default function SuccessView({ collection, onNotification }) {
   }
 
   return (
-    <div className="min-h-screen pt-24 pb-16 flex items-start justify-center" style={{background: '#0a0f1e'}}>
-      <div className="w-full max-w-2xl px-6">
+    <div className="min-h-screen relative py-12">
+      <div className="w-full max-w-2xl mx-auto px-6">
         <div className="mb-8">
           <Link
             href="/"

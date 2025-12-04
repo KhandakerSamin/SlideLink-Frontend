@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation"
 import CreateForm from "@/components/CreateCollection/create-form"
 import SuccessView from "@/components/CreateCollection/success-view"
 import LoadingSpinner from "@/components/CreateCollection/loading-spinner"
+import { showNotification } from "@/lib/notifications"
 
 export default function CreatePage() {
   const [formData, setFormData] = useState({
@@ -54,28 +55,17 @@ export default function CreatePage() {
           ...formData,
         }
         setCreatedCollection(mockCollection)
+        showNotification('✅ Collection created successfully!', 'success')
       } else {
         setError(data.error || "Failed to create collection")
+        showNotification(`❌ ${data.error || 'Failed to create collection'}`, 'error')
       }
     } catch (error) {
       setError("Something went wrong. Please try again.")
+      showNotification('⚠️ Something went wrong. Please try again.', 'error')
     } finally {
       setIsLoading(false)
     }
-  }
-
-  const showNotification = (message, type = "success") => {
-    // Simple notification system - you can replace with a proper toast library
-    const notification = document.createElement("div")
-    notification.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-xl text-white font-medium transition-all duration-300 ${type === "success" ? "bg-green-600" : "bg-red-600"
-      }`
-    notification.textContent = message
-    document.body.appendChild(notification)
-
-    setTimeout(() => {
-      notification.style.opacity = "0"
-      setTimeout(() => document.body.removeChild(notification), 300)
-    }, 3000)
   }
 
   // Show loading spinner

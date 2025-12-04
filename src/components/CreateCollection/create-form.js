@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Users, Lock, Mail, BookOpen } from 'lucide-react'
+import { showNotification } from '@/lib/notifications'
 
 const faculties = {
   "Faculty of Science and Information Technology (FSIT)": [
@@ -47,29 +48,23 @@ const faculties = {
 
 const semesters = ["Spring 2025", "Summer 2025", "Fall 2025"]
 
-export default function CreateForm() {
-  const [formData, setFormData] = useState({
-    section: '',
-    courseCode: '',
-    semester: 'Spring 2025',
-    faculty: '',
-    department: '',
-    teamCount: '',
-    password: '',
-    creatorEmail: ''
-  })
-  const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-
+export default function CreateForm({ formData, setFormData, onSubmit, error, isLoading }) {
   const handleSubmit = (e) => {
     e.preventDefault()
-    setIsLoading(true)
-    setError('')
     
-    setTimeout(() => {
-      setIsLoading(false)
-      alert('Collection created successfully!')
-    }, 1500)
+    // Validate required fields
+    if (!formData.section || !formData.courseCode || !formData.faculty || !formData.department || !formData.teamCount || !formData.password) {
+      showNotification('Please fill in all required fields', 'error')
+      return
+    }
+    
+    if (formData.password.length < 6 || formData.password.length > 12) {
+      showNotification('Password must be between 6-12 characters', 'error')
+      return
+    }
+    
+    // Call parent submit handler
+    onSubmit(e)
   }
 
   return (

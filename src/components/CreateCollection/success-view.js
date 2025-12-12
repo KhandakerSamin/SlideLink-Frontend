@@ -16,6 +16,11 @@ export default function SuccessView({ collection, onNotification }) {
       })
   }
 
+  const handleGoToCollection = () => {
+    // Set authentication flag so creator doesn't need to authenticate again
+    localStorage.setItem(`auth_${collection.username}`, "true")
+  }
+
   const downloadQR = async () => {
     try {
       const response = await fetch(collection.qrCode)
@@ -146,6 +151,7 @@ export default function SuccessView({ collection, onNotification }) {
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
                 href={`/collections/${collection.username}`}
+                onClick={handleGoToCollection}
                 className="flex-1 btn-gradient text-white py-3.5 px-6 rounded-xl font-semibold transition-all text-base text-center inline-flex items-center justify-center gap-2 shadow-md hover:shadow-indigo-500/30"
               >
                 <ExternalLink className="w-4 h-4" />

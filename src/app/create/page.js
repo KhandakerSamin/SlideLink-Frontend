@@ -44,15 +44,14 @@ export default function CreatePage() {
       const data = await response.json()
 
       if (response.ok) {
-        // Generate a proper collection username
-        const deptCode = formData.department.split(" ")[0]; // Use the full first word
-        const username = `${formData.section}-${formData.courseCode}-2025-${deptCode}`;
+        // Use the username returned from backend
+        const username = data.collection.username
         // Create the collection object
         const mockCollection = {
           username: username,
           shareLink: `${window.location.origin}/collections/${username}?password=${formData.password}`,
           qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`${window.location.origin}/collections/${username}?password=${formData.password}`)}`,
-          ...formData,
+          ...data.collection,
         }
         setCreatedCollection(mockCollection)
         showNotification('✅ Collection created successfully!', 'success')

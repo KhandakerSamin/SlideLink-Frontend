@@ -46,7 +46,7 @@ const faculties = {
   ],
 }
 
-const semesters = ["Spring 2025", "Summer 2025", "Fall 2025"]
+const semesters = ["Spring 2025", "Summer 2025", "Fall 2025", "Spring 2026", "Summer 2026", "Fall 2026"]
 
 export default function CreateForm({ formData, setFormData, onSubmit, error, isLoading }) {
   const handleSubmit = (e) => {

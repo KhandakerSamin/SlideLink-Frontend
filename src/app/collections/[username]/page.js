@@ -31,8 +31,11 @@ export default function CollectionPage() {
       if (passwordFromUrl) {
         await authenticateAndLoadData(passwordFromUrl)
       } else {
+        // Allow direct access without password (for creator)
+        setIsAuthenticated(true)
+        await loadCollectionData()
+        await loadSubmissions()
         setIsLoading(false)
-        setIsAuthenticated(false)
       }
     }
     initialAuthCheck()

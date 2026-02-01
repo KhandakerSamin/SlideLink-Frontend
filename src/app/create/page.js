@@ -10,7 +10,7 @@ export default function CreatePage() {
   const [formData, setFormData] = useState({
     section: "",
     courseCode: "",
-    semester: "Summer 2025",
+    semester: "Spring 2026",
     faculty: "",
     department: "",
     teamCount: "",
@@ -49,8 +49,8 @@ export default function CreatePage() {
         // Create the collection object
         const mockCollection = {
           username: username,
-          shareLink: `${window.location.origin}/collections/${username}?password=${formData.password}`,
-          qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`${window.location.origin}/collections/${username}?password=${formData.password}`)}`,
+          shareLink: `${window.location.origin}/collections/${username}`,
+          qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`${window.location.origin}/collections/${username}`)}`,
           ...data.collection,
         }
         setCreatedCollection(mockCollection)

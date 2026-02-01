@@ -46,7 +46,7 @@ const faculties = {
   ],
 }
 
-const semesters = ["Spring 2025", "Summer 2025", "Fall 2025", "Spring 2026", "Summer 2026", "Fall 2026"]
+const semesters = ["Spring 2026", "Summer 2026", "Fall 2026"]
 
 export default function CreateForm({ formData, setFormData, onSubmit, error, isLoading }) {
   const handleSubmit = (e) => {
@@ -161,7 +161,7 @@ export default function CreateForm({ formData, setFormData, onSubmit, error, isL
                   className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 >
                   {semesters.map((semester) => (
-                    <option key={semester} value={semester}>
+                    <option key={semester} value={semester} className="bg-slate-900 text-slate-100">
                       {semester}
                     </option>
                   ))}
@@ -181,9 +181,9 @@ export default function CreateForm({ formData, setFormData, onSubmit, error, isL
                   }}
                   className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 >
-                  <option value="">Select faculty</option>
+                  <option value="" className="bg-slate-900 text-slate-100">Select faculty</option>
                   {Object.keys(faculties).map((faculty) => (
-                    <option key={faculty} value={faculty}>
+                    <option key={faculty} value={faculty} className="bg-slate-900 text-slate-100">
                       {faculty}
                     </option>
                   ))}
@@ -202,10 +202,10 @@ export default function CreateForm({ formData, setFormData, onSubmit, error, isL
                   disabled={!formData.faculty}
                   className="w-full rounded-xl bg-slate-900/60 border border-slate-700/60 px-4 py-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  <option value="">{formData.faculty ? "Select department" : "Select faculty first"}</option>
+                  <option value="" className="bg-slate-900 text-slate-100">{formData.faculty ? "Select department" : "Select faculty first"}</option>
                   {formData.faculty &&
                     faculties[formData.faculty]?.map((dept) => (
-                      <option key={dept} value={dept}>
+                      <option key={dept} value={dept} className="bg-slate-900 text-slate-100">
                         {dept}
                       </option>
                     ))}
